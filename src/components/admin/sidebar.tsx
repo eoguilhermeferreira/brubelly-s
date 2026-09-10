@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -13,6 +14,7 @@ import {
 } from "lucide-react";
 
 import { logout } from "@/app/admin/actions";
+import { STORE } from "@/config/store";
 import { cn } from "@/lib/utils";
 
 const NAV_ITEMS = [
@@ -29,11 +31,14 @@ export function AdminSidebar() {
 
   return (
     <aside className="hidden w-60 shrink-0 flex-col border-r border-pine-700/40 bg-pine-900 text-white md:flex">
-      <div className="flex items-center gap-2 px-5 py-5">
-        <span className="flex size-8 items-center justify-center rounded-full bg-rose-500 font-display text-sm font-bold">
-          B
-        </span>
-        <span className="font-display text-sm font-bold">BruBelly&apos;s Admin</span>
+      <div className="px-5 py-5">
+        <Image
+          src={STORE.logo}
+          alt={STORE.name}
+          width={STORE.logoWidth}
+          height={STORE.logoHeight}
+          className="h-9 w-auto"
+        />
       </div>
 
       <nav className="flex flex-1 flex-col gap-0.5 px-3">

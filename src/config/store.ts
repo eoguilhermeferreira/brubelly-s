@@ -5,7 +5,10 @@ export const STORE = {
   description:
     "Roupas e calçados infantis selecionados com carinho — do bebê ao pré-adolescente, com caimento confortável e tecidos macios para o dia a dia e ocasiões especiais.",
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.brubellys.com.br",
-  logo: "/logo-brubellys.svg",
+  logo: "/logo-brubellys.png",
+  /** Proporção real do arquivo em public/logo-brubellys.png (381×162, fundo transparente). */
+  logoWidth: 381,
+  logoHeight: 162,
 
   contact: {
     whatsapp: "5514997471297",

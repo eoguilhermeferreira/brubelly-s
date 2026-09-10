@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { Menu, ShoppingBag } from "lucide-react";
 
@@ -12,6 +13,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
+import { STORE } from "@/config/store";
 import type { Category } from "@/types/database.types";
 
 export function CartTriggerButton() {
@@ -49,7 +51,14 @@ export function MobileNav({ categories }: { categories: Category[] }) {
       </button>
       <SheetContent side="left" className="w-72">
         <SheetHeader>
-          <SheetTitle>Menu</SheetTitle>
+          <SheetTitle className="sr-only">Menu</SheetTitle>
+          <Image
+            src={STORE.logo}
+            alt={STORE.name}
+            width={STORE.logoWidth}
+            height={STORE.logoHeight}
+            className="h-9 w-auto"
+          />
         </SheetHeader>
         <nav className="flex flex-col gap-1 px-5">
           {categories.map((category) => (

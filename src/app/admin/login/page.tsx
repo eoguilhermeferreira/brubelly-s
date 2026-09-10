@@ -1,7 +1,8 @@
 "use client";
 
 import { Suspense, useActionState } from "react";
-import { Loader2, Lock } from "lucide-react";
+import Image from "next/image";
+import { Loader2 } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 
 import { login, type LoginState } from "@/app/admin/actions";
@@ -17,10 +18,15 @@ export default function AdminLoginPage() {
     <div className="flex min-h-screen items-center justify-center bg-pine-900 px-4">
       <div className="w-full max-w-sm rounded-2xl bg-white p-8 shadow-xl">
         <div className="flex flex-col items-center gap-2 text-center">
-          <span className="flex size-12 items-center justify-center rounded-full bg-rose-100">
-            <Lock className="size-5 text-rose-600" />
-          </span>
-          <h1 className="font-display text-lg font-bold text-pine-900">{STORE.shortName} · Admin</h1>
+          <Image
+            src={STORE.logo}
+            alt={STORE.name}
+            width={STORE.logoWidth}
+            height={STORE.logoHeight}
+            priority
+            className="h-14 w-auto"
+          />
+          <h1 className="font-display text-base font-bold text-pine-900">Painel administrativo</h1>
           <p className="text-sm text-muted-foreground">Acesso restrito à equipe</p>
         </div>
 

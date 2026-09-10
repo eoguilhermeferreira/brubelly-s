@@ -1,7 +1,9 @@
+import Image from "next/image";
 import Link from "next/link";
 
 import { CartSheet } from "@/components/store/cart-sheet";
 import { CartTriggerButton, MobileNav } from "@/components/store/header-actions";
+import { STORE } from "@/config/store";
 import { getCategories } from "@/lib/queries";
 
 export async function Header() {
@@ -12,16 +14,15 @@ export async function Header() {
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
         <div className="flex items-center gap-2">
           <MobileNav categories={categories} />
-          <Link href="/" className="flex items-center gap-2">
-            <span className="flex size-9 items-center justify-center rounded-full bg-rose-500 font-display text-base font-bold text-white">
-              B
-            </span>
-            <span className="font-display text-lg font-bold leading-none text-pine-900">
-              BruBelly&apos;s
-              <span className="block text-[10px] font-medium tracking-[0.2em] text-mint-600 uppercase">
-                Boutique
-              </span>
-            </span>
+          <Link href="/" aria-label={STORE.name}>
+            <Image
+              src={STORE.logo}
+              alt={STORE.name}
+              width={STORE.logoWidth}
+              height={STORE.logoHeight}
+              priority
+              className="h-11 w-auto sm:h-12"
+            />
           </Link>
         </div>
 

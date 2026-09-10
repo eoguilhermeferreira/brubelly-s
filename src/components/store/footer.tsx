@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 import { FacebookIcon } from "@/components/icons/facebook-icon";
@@ -18,8 +19,14 @@ export function Footer() {
       <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
         <div className="grid gap-10 sm:grid-cols-3">
           <div>
-            <p className="font-display text-xl font-bold">{STORE.shortName}</p>
-            <p className="mt-2 max-w-xs text-sm text-white/70">{STORE.description}</p>
+            <Image
+              src={STORE.logo}
+              alt={STORE.name}
+              width={STORE.logoWidth}
+              height={STORE.logoHeight}
+              className="h-10 w-auto"
+            />
+            <p className="mt-3 max-w-xs text-sm text-white/70">{STORE.description}</p>
             <div className="mt-4 flex gap-2">
               <a
                 href={STORE.social.instagram}
