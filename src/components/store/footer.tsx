@@ -13,6 +13,16 @@ const HELP_LINKS = [
   { href: "/checkout", label: "Formas de pagamento" },
 ];
 
+const PAYMENT_ICONS = [
+  { src: "/payment-icons/pix.svg", alt: "Pix" },
+  { src: "/payment-icons/visa.svg", alt: "Visa" },
+  { src: "/payment-icons/mastercard.svg", alt: "Mastercard" },
+  { src: "/payment-icons/elo.svg", alt: "Elo" },
+  { src: "/payment-icons/hipercard.svg", alt: "Hipercard" },
+  { src: "/payment-icons/amex.svg", alt: "American Express" },
+  { src: "/payment-icons/boleto.svg", alt: "Boleto" },
+];
+
 export function Footer() {
   return (
     <footer className="mt-16 bg-pine-900 text-white">
@@ -92,7 +102,21 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-10 flex flex-col gap-2 border-t border-white/10 pt-6 text-xs text-white/50 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-10 border-t border-white/10 pt-8">
+          <p className="text-center text-xs font-semibold uppercase tracking-wide text-white/50">
+            Formas de pagamento
+          </p>
+          <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
+            {PAYMENT_ICONS.map((icon) => (
+              // SVGs estáticos pequenos — <img> simples evita a otimização do
+              // next/image (que exige dangerouslyAllowSVG para SVG local).
+              // eslint-disable-next-line @next/next/no-img-element
+              <img key={icon.src} src={icon.src} alt={icon.alt} className="h-8 w-auto rounded-md" />
+            ))}
+          </div>
+        </div>
+
+        <div className="mt-6 flex flex-col gap-2 pt-2 text-xs text-white/50 sm:flex-row sm:items-center sm:justify-between">
           <p>© {new Date().getFullYear()} {STORE.name}. Todos os direitos reservados.</p>
           <p>Pagamento processado com segurança via Mercado Pago.</p>
         </div>
