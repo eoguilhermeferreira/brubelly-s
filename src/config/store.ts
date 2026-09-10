@@ -11,16 +11,23 @@ export const STORE = {
     whatsapp: "5511999999999",
     whatsappDisplay: "(11) 99999-9999",
     email: "ola@brubellys.com.br",
-    instagram: "brubellysboutique",
+    instagram: "brubellyboutique",
   },
 
   social: {
-    instagram: "https://instagram.com/brubellysboutique",
+    instagram: "https://instagram.com/brubellyboutique",
     tiktok: "https://tiktok.com/@brubellysboutique",
+    /**
+     * A página "BruBellys Avaré" não tem link/usuário confirmado ainda —
+     * isto aponta pra busca do Facebook por esse nome (não quebra, mas não
+     * é o link direto). Troque por facebook.com/<usuário-da-página> assim
+     * que tiver o link exato.
+     */
+    facebook: "https://www.facebook.com/search/top/?q=BruBellys%20Avar%C3%A9",
   },
 
   address: {
-    city: "São Paulo",
+    city: "Avaré",
     state: "SP",
   },
 
@@ -28,7 +35,7 @@ export const STORE = {
     /** Frete fixo usado como fallback quando o Melhor Envio não responde ou não está configurado. */
     flatRateCents: 1990,
     freeShippingThresholdCents: 29900,
-    originZipCode: "01310-100",
+    originZipCode: "18700-090",
   },
 
   checkout: {

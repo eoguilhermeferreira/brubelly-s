@@ -1,6 +1,8 @@
 import Link from "next/link";
 
+import { FacebookIcon } from "@/components/icons/facebook-icon";
 import { InstagramIcon } from "@/components/icons/instagram-icon";
+import { TiktokIcon } from "@/components/icons/tiktok-icon";
 import { WhatsappIcon } from "@/components/icons/whatsapp-icon";
 import { STORE } from "@/config/store";
 
@@ -27,6 +29,24 @@ export function Footer() {
                 className="flex size-9 items-center justify-center rounded-full bg-white/10 hover:bg-white/20"
               >
                 <InstagramIcon className="size-4" />
+              </a>
+              <a
+                href={STORE.social.facebook}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Facebook"
+                className="flex size-9 items-center justify-center rounded-full bg-white/10 hover:bg-white/20"
+              >
+                <FacebookIcon className="size-4" />
+              </a>
+              <a
+                href={STORE.social.tiktok}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="TikTok"
+                className="flex size-9 items-center justify-center rounded-full bg-white/10 hover:bg-white/20"
+              >
+                <TiktokIcon className="size-4" />
               </a>
               <a
                 href={`https://wa.me/${STORE.contact.whatsapp}`}
