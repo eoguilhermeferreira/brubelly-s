@@ -8,8 +8,8 @@ export const STORE = {
   logo: "/logo-brubellys.svg",
 
   contact: {
-    whatsapp: "5511999999999",
-    whatsappDisplay: "(11) 99999-9999",
+    whatsapp: "5514997471297",
+    whatsappDisplay: "(14) 99747-1297",
     email: "ola@brubellys.com.br",
     instagram: "brubellyboutique",
   },
