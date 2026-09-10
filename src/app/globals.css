@@ -1,0 +1,214 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+/* ---------------------------------------------------------------------
+   BruBelly's Boutique — design tokens
+   Paleta: algodão (base), menta (verde-claro), pinho (verde-escuro/tinta),
+   framboesa (rosa/ação), rosa-algodão-doce (superfície alternada), ouro (detalhe).
+   ------------------------------------------------------------------- */
+
+:root {
+  --radius: 1rem;
+
+  /* Paleta nomeada */
+  --paper: #fbf8f3;
+  --paper-warm: #f5efe4;
+  --white: #ffffff;
+  --mint-50: #eef7f0;
+  --mint-200: #cfe9d7;
+  --mint-400: #9ed4ac;
+  --mint-500: #7ec293;
+  --mint-600: #5da878;
+  --pine-700: #274a37;
+  --pine-900: #16281d;
+  --rose-100: #fbe4ea;
+  --rose-300: #f4a9be;
+  --rose-500: #e85d82;
+  --rose-600: #d43f68;
+  --gold-400: #e8a93d;
+  --gold-600: #c2842a;
+
+  --background: var(--paper);
+  --foreground: var(--pine-900);
+
+  --card: var(--white);
+  --card-foreground: var(--pine-900);
+
+  --popover: var(--white);
+  --popover-foreground: var(--pine-900);
+
+  --primary: var(--rose-500);
+  --primary-foreground: var(--white);
+
+  --secondary: var(--mint-400);
+  --secondary-foreground: var(--pine-900);
+
+  --muted: var(--paper-warm);
+  --muted-foreground: #6b7d70;
+
+  --accent: var(--rose-100);
+  --accent-foreground: var(--pine-900);
+
+  --destructive: #c23a3a;
+  --destructive-foreground: var(--white);
+
+  --border: #e7ddc9;
+  --input: #e7ddc9;
+  --ring: var(--mint-500);
+
+  --success: #4a8f5c;
+  --warning: var(--gold-600);
+
+  --font-display: var(--font-bricolage), "Bricolage Grotesque", ui-sans-serif, system-ui;
+  --font-body: var(--font-jakarta), "Plus Jakarta Sans", ui-sans-serif, system-ui;
+  --font-mono-tag: var(--font-ibm-mono), "IBM Plex Mono", ui-monospace, monospace;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+
+  --color-paper: var(--paper);
+  --color-paper-warm: var(--paper-warm);
+  --color-mint-50: var(--mint-50);
+  --color-mint-200: var(--mint-200);
+  --color-mint-400: var(--mint-400);
+  --color-mint-500: var(--mint-500);
+  --color-mint-600: var(--mint-600);
+  --color-pine-700: var(--pine-700);
+  --color-pine-900: var(--pine-900);
+  --color-rose-100: var(--rose-100);
+  --color-rose-300: var(--rose-300);
+  --color-rose-500: var(--rose-500);
+  --color-rose-600: var(--rose-600);
+  --color-gold-400: var(--gold-400);
+  --color-gold-600: var(--gold-600);
+
+  --font-sans: var(--font-body);
+  --font-display: var(--font-display);
+  --font-tag: var(--font-mono-tag);
+
+  --radius-sm: calc(var(--radius) - 0.5rem);
+  --radius-md: calc(var(--radius) - 0.25rem);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 0.5rem);
+
+  --animate-tag-swing: tag-swing 0.4s ease-out;
+  --animate-float-slow: float-slow 6s ease-in-out infinite;
+}
+
+@keyframes tag-swing {
+  0% {
+    transform: rotate(0deg);
+  }
+  30% {
+    transform: rotate(-4deg);
+  }
+  60% {
+    transform: rotate(2deg);
+  }
+  100% {
+    transform: rotate(-3deg);
+  }
+}
+
+@keyframes float-slow {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+
+  body {
+    background: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-body);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    letter-spacing: -0.01em;
+  }
+
+  ::selection {
+    background: var(--rose-300);
+    color: var(--pine-900);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--mint-600);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+/* Etiqueta de roupa — elemento-assinatura usado em cards de produto e chips
+   de categoria. O "furinho de barbante" é o pseudo-elemento ::before. */
+@layer components {
+  .tag-shape {
+    position: relative;
+    clip-path: polygon(
+      12% 0%,
+      100% 0%,
+      100% 100%,
+      12% 100%,
+      0% 78%,
+      0% 22%
+    );
+  }
+
+  .tag-hole {
+    position: absolute;
+    left: 0.5rem;
+    top: 50%;
+    translate: 0 -50%;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 9999px;
+    background: var(--paper);
+    box-shadow: inset 0 0 0 1.5px var(--pine-900);
+    opacity: 0.35;
+  }
+}
