@@ -1,12 +1,11 @@
 import Link from "next/link";
-import { ArrowRight, Truck, RefreshCw, ShieldCheck } from "lucide-react";
+import { ArrowRight, CreditCard, ShieldCheck, Truck } from "lucide-react";
 
 import { BannerCarousel } from "@/components/store/banner-carousel";
 import { CategoryGrid } from "@/components/store/category-grid";
 import { ProductCard } from "@/components/store/product-card";
 import { Button } from "@/components/ui/button";
 import { STORE } from "@/config/store";
-import { formatPrice } from "@/lib/format";
 import { getBanners, getCategories, getProducts } from "@/lib/queries";
 
 export default async function HomePage() {
@@ -87,15 +86,15 @@ export default async function HomePage() {
           <div>
             <p className="font-display text-sm font-semibold text-pine-900">Frete para todo o Brasil</p>
             <p className="text-xs text-pine-900/70">
-              Grátis acima de {formatPrice(STORE.shipping.freeShippingThresholdCents)}
+              Ou retire grátis em {STORE.address.city}-{STORE.address.state}
             </p>
           </div>
         </div>
         <div className="flex items-start gap-3">
-          <RefreshCw className="mt-0.5 size-6 shrink-0 text-rose-600" strokeWidth={1.5} />
+          <CreditCard className="mt-0.5 size-6 shrink-0 text-rose-600" strokeWidth={1.5} />
           <div>
-            <p className="font-display text-sm font-semibold text-pine-900">Troca fácil</p>
-            <p className="text-xs text-pine-900/70">Até 30 dias após o recebimento</p>
+            <p className="font-display text-sm font-semibold text-pine-900">Parcelamos no cartão</p>
+            <p className="text-xs text-pine-900/70">Cartão, Pix ou boleto via Mercado Pago</p>
           </div>
         </div>
         <div className="flex items-start gap-3">
