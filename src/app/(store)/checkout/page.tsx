@@ -4,7 +4,7 @@ import * as React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Loader2 } from "lucide-react";
+import { Loader2, Store, Truck } from "lucide-react";
 import { toast } from "sonner";
 
 import { createOrder, getShippingOptions, lookupAddressByCep } from "@/app/(store)/checkout/actions";
@@ -12,9 +12,13 @@ import { useCart } from "@/components/cart/cart-provider";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { STORE } from "@/config/store";
 import type { CheckoutFieldErrors } from "@/lib/checkout-schema";
 import { formatCep, formatPrice } from "@/lib/format";
-import type { ShippingOption } from "@/lib/shipping";
+import { getPickupOption, type ShippingOption } from "@/lib/shipping";
+import { cn } from "@/lib/utils";
+
+type DeliveryMethod = "entrega" | "retirada";
 
 const initialForm = {
   name: "",
@@ -29,6 +33,8 @@ const initialForm = {
   state: "",
 };
 
+const PICKUP_OPTION = getPickupOption();
+
 export default function CheckoutPage() {
   const router = useRouter();
   const { items, subtotalCents, clear } = useCart();
@@ -36,11 +42,22 @@ export default function CheckoutPage() {
   const [form, setForm] = React.useState(initialForm);
   const [errors, setErrors] = React.useState<CheckoutFieldErrors>({});
   const [formError, setFormError] = React.useState<string | null>(null);
+  const [deliveryMethod, setDeliveryMethod] = React.useState<DeliveryMethod>("entrega");
   const [shippingOptions, setShippingOptions] = React.useState<ShippingOption[]>([]);
   const [shippingOptionId, setShippingOptionId] = React.useState<string>("");
   const [loadingCep, setLoadingCep] = React.useState(false);
   const [loadingShipping, setLoadingShipping] = React.useState(false);
   const [submitting, setSubmitting] = React.useState(false);
+
+  function handleDeliveryMethodChange(method: DeliveryMethod) {
+    setDeliveryMethod(method);
+    setErrors({});
+    if (method === "retirada") {
+      setShippingOptionId(PICKUP_OPTION.id);
+    } else {
+      setShippingOptionId(shippingOptions[0]?.id ?? "");
+    }
+  }
 
   const lines = React.useMemo(
     () => items.map((i) => ({ productId: i.productId, variationValue: i.variationValue, quantity: i.quantity })),
@@ -78,7 +95,7 @@ export default function CheckoutPage() {
     setErrors({});
     setFormError(null);
 
-    const result = await createOrder({ form, lines, shippingOptionId });
+    const result = await createOrder({ form: { ...form, deliveryMethod }, lines, shippingOptionId });
 
     if (!result.ok) {
       setErrors(result.fieldErrors);
@@ -103,7 +120,8 @@ export default function CheckoutPage() {
     );
   }
 
-  const selectedShipping = shippingOptions.find((o) => o.id === shippingOptionId);
+  const selectedShipping =
+    deliveryMethod === "retirada" ? PICKUP_OPTION : shippingOptions.find((o) => o.id === shippingOptionId);
   const totalCents = subtotalCents + (selectedShipping?.priceCents ?? 0);
 
   return (
@@ -128,71 +146,126 @@ export default function CheckoutPage() {
           </fieldset>
 
           <fieldset className="flex flex-col gap-4 rounded-2xl border border-border bg-white p-5">
-            <legend className="px-1 font-display font-semibold text-pine-900">Endereço de entrega</legend>
-            <div className="grid gap-4 sm:grid-cols-[160px_1fr]">
-              <Field label="CEP" error={errors.cep}>
-                <div className="relative">
-                  <Input
-                    value={form.cep}
-                    onChange={(e) => updateField("cep", formatCep(e.target.value))}
-                    onBlur={handleCepBlur}
-                    placeholder="00000-000"
-                    required
-                  />
-                  {loadingCep && <Loader2 className="absolute right-3 top-3 size-4 animate-spin text-muted-foreground" />}
-                </div>
-              </Field>
-              <Field label="Rua" error={errors.street}>
-                <Input value={form.street} onChange={(e) => updateField("street", e.target.value)} required />
-              </Field>
-            </div>
-            <div className="grid gap-4 sm:grid-cols-3">
-              <Field label="Número" error={errors.number}>
-                <Input value={form.number} onChange={(e) => updateField("number", e.target.value)} required />
-              </Field>
-              <Field label="Complemento">
-                <Input value={form.complement} onChange={(e) => updateField("complement", e.target.value)} />
-              </Field>
-              <Field label="Bairro" error={errors.neighborhood}>
-                <Input value={form.neighborhood} onChange={(e) => updateField("neighborhood", e.target.value)} required />
-              </Field>
-            </div>
-            <div className="grid gap-4 sm:grid-cols-[1fr_100px]">
-              <Field label="Cidade" error={errors.city}>
-                <Input value={form.city} onChange={(e) => updateField("city", e.target.value)} required />
-              </Field>
-              <Field label="UF" error={errors.state}>
-                <Input value={form.state} maxLength={2} onChange={(e) => updateField("state", e.target.value.toUpperCase())} required />
-              </Field>
+            <legend className="px-1 font-display font-semibold text-pine-900">Como você quer receber?</legend>
+
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                type="button"
+                onClick={() => handleDeliveryMethodChange("entrega")}
+                className={cn(
+                  "flex flex-col items-center gap-1.5 rounded-xl border-2 px-3 py-3.5 text-center transition-colors",
+                  deliveryMethod === "entrega"
+                    ? "border-rose-500 bg-rose-100/40"
+                    : "border-border hover:border-mint-500",
+                )}
+              >
+                <Truck className="size-5 text-pine-900" strokeWidth={1.75} />
+                <span className="text-sm font-semibold text-pine-900">Receber em casa</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => handleDeliveryMethodChange("retirada")}
+                className={cn(
+                  "flex flex-col items-center gap-1.5 rounded-xl border-2 px-3 py-3.5 text-center transition-colors",
+                  deliveryMethod === "retirada"
+                    ? "border-rose-500 bg-rose-100/40"
+                    : "border-border hover:border-mint-500",
+                )}
+              >
+                <Store className="size-5 text-pine-900" strokeWidth={1.75} />
+                <span className="text-sm font-semibold text-pine-900">Retirar na loja</span>
+              </button>
             </div>
 
-            {shippingOptions.length > 0 && (
-              <div className="mt-1">
-                <p className="text-sm font-semibold text-pine-900">Frete</p>
-                <div className="mt-2 flex flex-col gap-2">
-                  {shippingOptions.map((option) => (
-                    <label
-                      key={option.id}
-                      className="flex cursor-pointer items-center justify-between rounded-lg border border-border px-3.5 py-2.5 text-sm has-[:checked]:border-rose-500 has-[:checked]:bg-rose-100/40"
-                    >
-                      <span className="flex items-center gap-2">
-                        <input
-                          type="radio"
-                          name="shipping"
-                          checked={shippingOptionId === option.id}
-                          onChange={() => setShippingOptionId(option.id)}
-                        />
-                        {option.name} — até {option.estimatedDays} dias úteis
-                      </span>
-                      <span className="font-semibold">
-                        {option.priceCents === 0 ? "Grátis" : formatPrice(option.priceCents)}
-                      </span>
-                    </label>
-                  ))}
-                </div>
+            {deliveryMethod === "retirada" ? (
+              <div className="rounded-xl bg-mint-50 p-4 text-sm text-pine-900">
+                <p className="font-semibold">
+                  Retirada grátis em {STORE.address.city}-{STORE.address.state}
+                </p>
+                <p className="mt-1 text-pine-900/80">
+                  Assim que o pagamento for confirmado, chamamos você no WhatsApp (
+                  {STORE.contact.whatsappDisplay}) para combinar o dia e horário de retirada.
+                </p>
               </div>
+            ) : (
+              <>
+                <div className="grid gap-4 sm:grid-cols-[160px_1fr]">
+                  <Field label="CEP" error={errors.cep}>
+                    <div className="relative">
+                      <Input
+                        value={form.cep}
+                        onChange={(e) => updateField("cep", formatCep(e.target.value))}
+                        onBlur={handleCepBlur}
+                        placeholder="00000-000"
+                        required
+                      />
+                      {loadingCep && (
+                        <Loader2 className="absolute right-3 top-3 size-4 animate-spin text-muted-foreground" />
+                      )}
+                    </div>
+                  </Field>
+                  <Field label="Rua" error={errors.street}>
+                    <Input value={form.street} onChange={(e) => updateField("street", e.target.value)} required />
+                  </Field>
+                </div>
+                <div className="grid gap-4 sm:grid-cols-3">
+                  <Field label="Número" error={errors.number}>
+                    <Input value={form.number} onChange={(e) => updateField("number", e.target.value)} required />
+                  </Field>
+                  <Field label="Complemento">
+                    <Input value={form.complement} onChange={(e) => updateField("complement", e.target.value)} />
+                  </Field>
+                  <Field label="Bairro" error={errors.neighborhood}>
+                    <Input
+                      value={form.neighborhood}
+                      onChange={(e) => updateField("neighborhood", e.target.value)}
+                      required
+                    />
+                  </Field>
+                </div>
+                <div className="grid gap-4 sm:grid-cols-[1fr_100px]">
+                  <Field label="Cidade" error={errors.city}>
+                    <Input value={form.city} onChange={(e) => updateField("city", e.target.value)} required />
+                  </Field>
+                  <Field label="UF" error={errors.state}>
+                    <Input
+                      value={form.state}
+                      maxLength={2}
+                      onChange={(e) => updateField("state", e.target.value.toUpperCase())}
+                      required
+                    />
+                  </Field>
+                </div>
+
+                {shippingOptions.length > 0 && (
+                  <div className="mt-1">
+                    <p className="text-sm font-semibold text-pine-900">Frete</p>
+                    <div className="mt-2 flex flex-col gap-2">
+                      {shippingOptions.map((option) => (
+                        <label
+                          key={option.id}
+                          className="flex cursor-pointer items-center justify-between rounded-lg border border-border px-3.5 py-2.5 text-sm has-[:checked]:border-rose-500 has-[:checked]:bg-rose-100/40"
+                        >
+                          <span className="flex items-center gap-2">
+                            <input
+                              type="radio"
+                              name="shipping"
+                              checked={shippingOptionId === option.id}
+                              onChange={() => setShippingOptionId(option.id)}
+                            />
+                            {option.name} — até {option.estimatedDays} dias úteis
+                          </span>
+                          <span className="font-semibold">
+                            {option.priceCents === 0 ? "Grátis" : formatPrice(option.priceCents)}
+                          </span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                {loadingShipping && <p className="text-xs text-muted-foreground">Calculando frete...</p>}
+              </>
             )}
-            {loadingShipping && <p className="text-xs text-muted-foreground">Calculando frete...</p>}
           </fieldset>
         </div>
 
@@ -221,7 +294,7 @@ export default function CheckoutPage() {
               <span>{formatPrice(subtotalCents)}</span>
             </div>
             <div className="flex justify-between text-muted-foreground">
-              <span>Frete</span>
+              <span>{deliveryMethod === "retirada" ? "Retirada" : "Frete"}</span>
               <span>
                 {selectedShipping
                   ? selectedShipping.priceCents === 0

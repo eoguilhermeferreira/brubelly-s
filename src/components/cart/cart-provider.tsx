@@ -86,7 +86,7 @@ const STORAGE_KEY = "brubellys.cart.v1";
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [state, dispatch] = React.useReducer(cartReducer, { items: [], isOpen: false });
-  const hydrated = React.useRef(false);
+  const [hydrated, setHydrated] = React.useState(false);
 
   React.useEffect(() => {
     try {
@@ -95,18 +95,21 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     } catch {
       // localStorage indisponível (modo privado etc.) — carrinho começa vazio
     } finally {
-      hydrated.current = true;
+      setHydrated(true);
     }
   }, []);
 
   React.useEffect(() => {
-    if (!hydrated.current) return;
+    // Só persiste depois que a hidratação inicial terminou — senão este efeito
+    // roda no mesmo commit do mount com o `state.items` ainda vazio (closure
+    // antiga) e sobrescreve o carrinho salvo antes do HYDRATE acima renderizar.
+    if (!hydrated) return;
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state.items));
     } catch {
       // ignora falha de escrita
     }
-  }, [state.items]);
+  }, [state.items, hydrated]);
 
   const value = React.useMemo<CartContextValue>(() => {
     const itemCount = state.items.reduce((sum, i) => sum + i.quantity, 0);

@@ -6,7 +6,7 @@ import { createCheckoutPreference } from "@/lib/mercadopago";
 import { quoteShipping } from "@/lib/melhor-envio";
 import { lookupCep } from "@/lib/viacep";
 import { MOCK_PRODUCTS } from "@/lib/mock-data";
-import type { ShippingOption } from "@/lib/shipping";
+import { getPickupOption, type ShippingOption } from "@/lib/shipping";
 
 export async function lookupAddressByCep(cep: string) {
   const address = await lookupCep(cep);
@@ -89,12 +89,17 @@ export async function createOrder({ form, lines, shippingOptionId }: CreateOrder
   const subtotalCents = resolved.reduce((sum, l) => sum + l.lineTotalCents, 0);
   const totalWeightGrams = resolved.reduce((sum, l) => sum + l.lineWeightGrams, 0);
 
-  const options = await quoteShipping({
-    destinationCep: parsed.data.cep,
-    totalWeightGrams,
-    subtotalCents,
-  });
-  const shipping = options.find((o) => o.id === shippingOptionId) ?? options[0];
+  let shipping: ShippingOption;
+  if (parsed.data.deliveryMethod === "retirada") {
+    shipping = getPickupOption();
+  } else {
+    const options = await quoteShipping({
+      destinationCep: parsed.data.cep,
+      totalWeightGrams,
+      subtotalCents,
+    });
+    shipping = options.find((o) => o.id === shippingOptionId) ?? options[0];
+  }
   const totalCents = subtotalCents + shipping.priceCents;
 
   const code = orderCode(Math.floor(Date.now() / 1000) % 100000);
