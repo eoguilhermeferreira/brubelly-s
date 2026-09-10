@@ -57,7 +57,7 @@ export function MobileNav({ categories }: { categories: Category[] }) {
             alt={STORE.name}
             width={STORE.logoWidth}
             height={STORE.logoHeight}
-            className="h-9 w-auto"
+            className="h-8 w-auto self-start"
           />
         </SheetHeader>
         <nav className="flex flex-col gap-1 px-5">
