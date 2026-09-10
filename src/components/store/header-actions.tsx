@@ -61,6 +61,13 @@ export function MobileNav({ categories }: { categories: Category[] }) {
           />
         </SheetHeader>
         <nav className="flex flex-col gap-1 px-5">
+          <Link
+            href="/"
+            onClick={() => setOpen(false)}
+            className="rounded-lg px-3 py-2.5 font-display text-base font-semibold text-pine-900 hover:bg-accent"
+          >
+            Início
+          </Link>
           {categories.map((category) => (
             <Link
               key={category.id}
