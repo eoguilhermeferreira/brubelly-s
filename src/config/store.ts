@@ -30,9 +30,15 @@ export const STORE = {
   },
 
   address: {
+    street: "Rua Bahia",
+    number: "669",
     city: "Avaré",
     state: "SP",
+    zipCode: "18700-090",
   },
+
+  /** Formato XX.XXX.XXX/XXXX-XX exigido em rodapé/documentos legais. */
+  cnpj: "23.694.209/0001-06",
 
   shipping: {
     /** Frete fixo usado como fallback quando o Melhor Envio não responde ou não está configurado. */

@@ -1,5 +1,9 @@
+import fs from "node:fs";
+import path from "node:path";
+
 import Image from "next/image";
 import Link from "next/link";
+import { MapPin, Mail } from "lucide-react";
 
 import { FacebookIcon } from "@/components/icons/facebook-icon";
 import { InstagramIcon } from "@/components/icons/instagram-icon";
@@ -7,10 +11,11 @@ import { TiktokIcon } from "@/components/icons/tiktok-icon";
 import { WhatsappIcon } from "@/components/icons/whatsapp-icon";
 import { STORE } from "@/config/store";
 
-const HELP_LINKS = [
-  { href: "/pedido", label: "Consultar meu pedido" },
+const INSTITUTIONAL_LINKS = [
   { href: "/produtos", label: "Todos os produtos" },
-  { href: "/checkout", label: "Formas de pagamento" },
+  { href: "/carrinho", label: "Meu carrinho" },
+  { href: "/perguntas-frequentes", label: "Perguntas frequentes" },
+  { href: "/pedido", label: "Consultar meu pedido" },
 ];
 
 const PAYMENT_ICONS = [
@@ -23,7 +28,22 @@ const PAYMENT_ICONS = [
   { src: "/payment-icons/boleto.svg", alt: "Boleto" },
 ];
 
+const NODEX_LOGO_PATH = "/nodex-logo.png";
+
+function hasNodexLogo() {
+  try {
+    return fs.existsSync(path.join(process.cwd(), "public", "nodex-logo.png"));
+  } catch {
+    return false;
+  }
+}
+
+const fullAddress = `${STORE.address.street}, ${STORE.address.number}, ${STORE.address.city} - ${STORE.address.state}, ${STORE.address.zipCode}`;
+const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(fullAddress)}`;
+
 export function Footer() {
+  const showNodexCredit = hasNodexLogo();
+
   return (
     <footer className="mt-16 bg-pine-900 text-white">
       <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
@@ -37,50 +57,14 @@ export function Footer() {
               className="h-10 w-auto"
             />
             <p className="mt-3 max-w-xs text-sm text-white/70">{STORE.description}</p>
-            <div className="mt-4 flex gap-2">
-              <a
-                href={STORE.social.instagram}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Instagram"
-                className="flex size-9 items-center justify-center rounded-full bg-white/10 hover:bg-white/20"
-              >
-                <InstagramIcon className="size-4" />
-              </a>
-              <a
-                href={STORE.social.facebook}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Facebook"
-                className="flex size-9 items-center justify-center rounded-full bg-white/10 hover:bg-white/20"
-              >
-                <FacebookIcon className="size-4" />
-              </a>
-              <a
-                href={STORE.social.tiktok}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="TikTok"
-                className="flex size-9 items-center justify-center rounded-full bg-white/10 hover:bg-white/20"
-              >
-                <TiktokIcon className="size-4" />
-              </a>
-              <a
-                href={`https://wa.me/${STORE.contact.whatsapp}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="WhatsApp"
-                className="flex size-9 items-center justify-center rounded-full bg-white/10 hover:bg-white/20"
-              >
-                <WhatsappIcon className="size-4" />
-              </a>
-            </div>
           </div>
 
           <div>
-            <p className="font-display text-sm font-semibold uppercase tracking-wide text-mint-400">Ajuda</p>
+            <p className="font-display text-sm font-semibold uppercase tracking-wide text-mint-400">
+              Institucional
+            </p>
             <ul className="mt-3 flex flex-col gap-2">
-              {HELP_LINKS.map((link) => (
+              {INSTITUTIONAL_LINKS.map((link) => (
                 <li key={link.href}>
                   <Link href={link.href} className="text-sm text-white/75 hover:text-white">
                     {link.label}
@@ -91,14 +75,82 @@ export function Footer() {
           </div>
 
           <div>
-            <p className="font-display text-sm font-semibold uppercase tracking-wide text-mint-400">Contato</p>
+            <p className="font-display text-sm font-semibold uppercase tracking-wide text-mint-400">
+              Atendimento
+            </p>
             <ul className="mt-3 flex flex-col gap-2 text-sm text-white/75">
-              <li>{STORE.contact.email}</li>
-              <li>{STORE.contact.whatsappDisplay}</li>
               <li>
-                {STORE.address.city} — {STORE.address.state}
+                <a
+                  href={`https://wa.me/${STORE.contact.whatsapp}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 hover:text-white"
+                >
+                  <WhatsappIcon className="size-3.5 shrink-0" />
+                  WhatsApp {STORE.contact.whatsappDisplay}
+                </a>
+              </li>
+              <li>
+                <a
+                  href={`mailto:${STORE.contact.email}`}
+                  className="inline-flex items-center gap-1.5 hover:text-white"
+                >
+                  <Mail className="size-3.5 shrink-0" />
+                  {STORE.contact.email}
+                </a>
+              </li>
+              <li>
+                <a
+                  href={mapsUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-start gap-1.5 hover:text-white"
+                >
+                  <MapPin className="mt-0.5 size-3.5 shrink-0" />
+                  <span>
+                    {STORE.address.street}, {STORE.address.number} — {STORE.address.city}/
+                    {STORE.address.state}, {STORE.address.zipCode}
+                  </span>
+                </a>
               </li>
             </ul>
+
+            <p className="mt-5 font-display text-sm font-semibold uppercase tracking-wide text-mint-400">
+              Redes sociais
+            </p>
+            <div className="mt-3 flex gap-2">
+              <a
+                href={STORE.social.instagram}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Instagram"
+                className="flex size-9 items-center justify-center rounded-full bg-white/10 hover:bg-white/20"
+              >
+                <InstagramIcon className="size-4" />
+              </a>
+              {STORE.social.tiktok && (
+                <a
+                  href={STORE.social.tiktok}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="TikTok"
+                  className="flex size-9 items-center justify-center rounded-full bg-white/10 hover:bg-white/20"
+                >
+                  <TiktokIcon className="size-4" />
+                </a>
+              )}
+              {STORE.social.facebook && (
+                <a
+                  href={STORE.social.facebook}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Facebook"
+                  className="flex size-9 items-center justify-center rounded-full bg-white/10 hover:bg-white/20"
+                >
+                  <FacebookIcon className="size-4" />
+                </a>
+              )}
+            </div>
           </div>
         </div>
 
@@ -116,10 +168,28 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-6 flex flex-col gap-2 pt-2 text-xs text-white/50 sm:flex-row sm:items-center sm:justify-between">
-          <p>© {new Date().getFullYear()} {STORE.name}. Todos os direitos reservados.</p>
-          <p>Pagamento processado com segurança via Mercado Pago.</p>
+        <div className="mt-8 flex flex-col gap-1 border-t border-white/10 pt-6 text-xs text-white/50">
+          <p>
+            © {new Date().getFullYear()}, {STORE.name}. É vedada qualquer reprodução total ou
+            parcial, nos termos da Lei nº 9.610/98. Todos os direitos reservados.
+          </p>
+          <p>CNPJ: {STORE.cnpj}</p>
         </div>
+
+        {showNodexCredit && (
+          <div className="mt-8 flex flex-col items-center gap-2">
+            <p className="text-xs text-white/40">Desenvolvido por</p>
+            <a
+              href="https://instagram.com/agencynodex"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="opacity-70 transition-opacity hover:opacity-100"
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={NODEX_LOGO_PATH} alt="Agência Nodex" className="h-16 w-auto" />
+            </a>
+          </div>
+        )}
       </div>
     </footer>
   );
