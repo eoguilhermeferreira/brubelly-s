@@ -1,6 +1,3 @@
-import fs from "node:fs";
-import path from "node:path";
-
 import Image from "next/image";
 import Link from "next/link";
 import { MapPin, Mail } from "lucide-react";
@@ -30,20 +27,10 @@ const PAYMENT_ICONS = [
 
 const NODEX_LOGO_PATH = "/nodex-logo.png";
 
-function hasNodexLogo() {
-  try {
-    return fs.existsSync(path.join(process.cwd(), "public", "nodex-logo.png"));
-  } catch {
-    return false;
-  }
-}
-
 const fullAddress = `${STORE.address.street}, ${STORE.address.number}, ${STORE.address.city} - ${STORE.address.state}, ${STORE.address.zipCode}`;
 const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(fullAddress)}`;
 
 export function Footer() {
-  const showNodexCredit = hasNodexLogo();
-
   return (
     <footer className="mt-16 bg-pine-900 text-white">
       <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
@@ -176,20 +163,18 @@ export function Footer() {
           <p>CNPJ: {STORE.cnpj}</p>
         </div>
 
-        {showNodexCredit && (
-          <div className="mt-8 flex flex-col items-center gap-2">
-            <p className="text-xs text-white/40">Desenvolvido por</p>
-            <a
-              href="https://instagram.com/agencynodex"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="opacity-70 transition-opacity hover:opacity-100"
-            >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={NODEX_LOGO_PATH} alt="Agência Nodex" className="h-16 w-auto" />
-            </a>
-          </div>
-        )}
+        <div className="mt-8 flex flex-col items-center gap-2">
+          <p className="text-xs text-white/40">Desenvolvido por</p>
+          <a
+            href="https://instagram.com/agencynodex"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="opacity-70 transition-opacity hover:opacity-100"
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={NODEX_LOGO_PATH} alt="Agência Nodex" className="h-16 w-auto" />
+          </a>
+        </div>
       </div>
     </footer>
   );
