@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, CreditCard, ShieldCheck, Truck } from "lucide-react";
 
@@ -63,6 +64,19 @@ export default async function HomePage() {
           {novidades.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
+        </div>
+      </section>
+
+      <section className="relative left-1/2 right-1/2 -mx-[50vw] mt-14 w-screen">
+        <div className="relative h-72 w-full sm:h-[420px] lg:h-[520px]">
+          <Image
+            src="/banners/promo-adidas.jpg"
+            alt="Coleção adidas para meninas"
+            fill
+            priority={false}
+            sizes="100vw"
+            className="object-cover object-[50%_20%]"
+          />
         </div>
       </section>
 
