@@ -1,13 +1,18 @@
-import { Baby, Footprints, Ribbon, Shirt, ShoppingBag, type LucideIcon } from "lucide-react";
+import type { ComponentType, SVGProps } from "react";
+import { Baby, Footprints, Handbag, Shirt, ShoppingBag } from "lucide-react";
 
-export const CATEGORY_ICONS: Record<string, LucideIcon> = {
+import { DressIcon } from "@/components/icons/dress-icon";
+
+type IconComponent = ComponentType<SVGProps<SVGSVGElement>>;
+
+export const CATEGORY_ICONS: Record<string, IconComponent> = {
   bebe: Baby,
-  menina: Shirt,
+  menina: DressIcon,
   menino: Shirt,
   calcados: Footprints,
-  acessorios: Ribbon,
+  acessorios: Handbag,
 };
 
-export function getCategoryIcon(slug: string): LucideIcon {
+export function getCategoryIcon(slug: string): IconComponent {
   return CATEGORY_ICONS[slug] ?? ShoppingBag;
 }
