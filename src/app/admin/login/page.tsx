@@ -33,10 +33,6 @@ export default function AdminLoginPage() {
         <Suspense fallback={null}>
           <LoginForm />
         </Suspense>
-
-        <p className="mt-5 rounded-lg bg-mint-50 p-3 text-center text-xs text-pine-900">
-          Modo demonstração — use <strong>equipe@brubellys.com.br</strong> / <strong>brubellys2026</strong>
-        </p>
       </div>
     </div>
   );

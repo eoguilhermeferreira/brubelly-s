@@ -1,8 +1,13 @@
 import type { ReactNode } from "react";
+import { redirect } from "next/navigation";
 
 import { AdminSidebar } from "@/components/admin/sidebar";
+import { getAdminProfile } from "@/lib/auth";
 
-export default function AdminProtectedLayout({ children }: { children: ReactNode }) {
+export default async function AdminProtectedLayout({ children }: { children: ReactNode }) {
+  const profile = await getAdminProfile();
+  if (!profile) redirect("/admin/login");
+
   return (
     <div className="flex min-h-screen bg-paper-warm">
       <AdminSidebar />
