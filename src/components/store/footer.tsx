@@ -168,7 +168,7 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-8 flex flex-col gap-1 border-t border-white/10 pt-6 text-xs text-white/50">
+        <div className="mt-8 flex flex-col items-center gap-1 border-t border-white/10 pt-6 text-center text-xs text-white/50">
           <p>
             © {new Date().getFullYear()}, {STORE.name}. É vedada qualquer reprodução total ou
             parcial, nos termos da Lei nº 9.610/98. Todos os direitos reservados.
