@@ -18,6 +18,8 @@ export async function saveBanner(
   const subtitle = String(formData.get("subtitle") ?? "").trim();
   const imageUrl = String(formData.get("image_url") ?? "").trim();
   const href = String(formData.get("href") ?? "").trim();
+  const ctaLabel = String(formData.get("cta_label") ?? "").trim();
+  const imagePosition = String(formData.get("image_position") ?? "").trim();
   const position = Number(formData.get("position") ?? 0);
   const active = formData.get("active") === "on";
 
@@ -30,6 +32,8 @@ export async function saveBanner(
     subtitle: subtitle || null,
     image_url: imageUrl,
     href,
+    cta_label: ctaLabel || null,
+    image_position: imagePosition || "center 30%",
     position: Number.isNaN(position) ? 0 : position,
     active,
   };

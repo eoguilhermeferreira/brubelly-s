@@ -19,8 +19,8 @@ export default async function HomePage() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 pb-20 sm:px-6">
-      <section className="grid gap-6 pt-6 sm:pt-10 lg:grid-cols-[1.1fr_1fr] lg:gap-10">
-        <div className="relative flex flex-col justify-center overflow-hidden rounded-2xl bg-mint-400/40 px-6 py-10 sm:px-10 sm:py-14">
+      <section className="grid gap-6 max-md:gap-0 pt-6 max-md:pt-0 sm:pt-10 lg:grid-cols-[1.1fr_1fr] lg:gap-10">
+        <div className="relative flex flex-col justify-center overflow-hidden rounded-2xl bg-mint-400/40 px-6 py-10 max-md:order-2 max-md:mt-6 sm:px-10 sm:py-14">
           <Image
             src="/banners/hero-flatlay.jpg"
             alt="Roupinhas e acessórios infantis dispostos com carinho"
@@ -51,7 +51,9 @@ export default async function HomePage() {
           </div>
         </div>
 
-        <BannerCarousel banners={banners} />
+        <div className="max-md:order-1">
+          <BannerCarousel banners={banners} />
+        </div>
       </section>
 
       <section className="mt-12">

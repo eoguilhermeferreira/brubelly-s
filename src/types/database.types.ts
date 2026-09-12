@@ -52,6 +52,8 @@ export type Banner = {
   subtitle: string | null;
   image_url: string;
   href: string;
+  cta_label: string | null;
+  image_position: string;
   position: number;
   active: boolean;
 };

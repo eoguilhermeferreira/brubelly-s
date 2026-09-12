@@ -42,6 +42,21 @@ export function BannerForm({ banner }: { banner: Banner | null }) {
         </div>
 
         <div className="flex flex-col gap-1.5">
+          <Label htmlFor="cta_label">Texto do botão (opcional)</Label>
+          <Input id="cta_label" name="cta_label" defaultValue={banner?.cta_label ?? ""} placeholder="Ver novidades" />
+        </div>
+
+        <div className="flex flex-col gap-1.5">
+          <Label htmlFor="image_position">Posição da imagem (recorte)</Label>
+          <Input
+            id="image_position"
+            name="image_position"
+            defaultValue={banner?.image_position ?? "center 30%"}
+            placeholder="center 30%"
+          />
+        </div>
+
+        <div className="flex flex-col gap-1.5">
           <Label htmlFor="position">Posição (ordem no carrossel)</Label>
           <Input id="position" name="position" type="number" defaultValue={banner?.position ?? 0} />
         </div>
