@@ -3,21 +3,21 @@
 import * as React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import type { Banner } from "@/types/database.types";
 
-const AUTOPLAY_MS = 6000;
+const AUTOPLAY_MS = 3000;
 const INTERACTION_PAUSE_MS = 6000;
+const DRAG_THRESHOLD_PX = 40;
 
 export function BannerCarousel({ banners }: { banners: Banner[] }) {
   const [index, setIndex] = React.useState(0);
   const prefersReducedMotion = React.useRef(false);
-  // Só é setado pelos handlers do bloco mobile (touch/setas/dots/foco no CTA) —
-  // no desktop fica sempre 0, então o autoplay nunca pausa lá.
   const pauseUntilRef = React.useRef(0);
-  const touchStartXRef = React.useRef<number | null>(null);
+  const dragStartXRef = React.useRef<number | null>(null);
+  const didDragRef = React.useRef(false);
 
   React.useEffect(() => {
     prefersReducedMotion.current = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -36,29 +36,39 @@ export function BannerCarousel({ banners }: { banners: Banner[] }) {
     pauseUntilRef.current = Date.now() + INTERACTION_PAUSE_MS;
   }, []);
 
-  const goPrev = React.useCallback(() => {
-    registerInteraction();
-    setIndex((i) => (i - 1 + banners.length) % banners.length);
-  }, [banners.length, registerInteraction]);
+  const goToDot = React.useCallback(
+    (i: number) => {
+      registerInteraction();
+      setIndex(i);
+    },
+    [registerInteraction],
+  );
 
-  const goNext = React.useCallback(() => {
-    registerInteraction();
-    setIndex((i) => (i + 1) % banners.length);
-  }, [banners.length, registerInteraction]);
-
-  function handleTouchStart(e: React.TouchEvent) {
-    touchStartXRef.current = e.touches[0].clientX;
+  // Arrasto com o dedo (mobile) ou com o mouse (desktop) — Pointer Events
+  // cobrem os dois casos com o mesmo código.
+  function handlePointerDown(e: React.PointerEvent) {
+    dragStartXRef.current = e.clientX;
   }
 
-  function handleTouchEnd(e: React.TouchEvent) {
+  function handlePointerUp(e: React.PointerEvent) {
     registerInteraction();
-    const startX = touchStartXRef.current;
-    touchStartXRef.current = null;
+    const startX = dragStartXRef.current;
+    dragStartXRef.current = null;
     if (startX === null) return;
-    const deltaX = e.changedTouches[0].clientX - startX;
-    if (Math.abs(deltaX) < 40) return;
+    const deltaX = e.clientX - startX;
+    if (Math.abs(deltaX) < DRAG_THRESHOLD_PX) return;
+    // Marca que houve arrasto pra suprimir o click do <Link> do slide desktop
+    // (senão o mouseup do arrasto navegaria pro href do banner).
+    didDragRef.current = true;
     if (deltaX < 0) setIndex((i) => (i + 1) % banners.length);
     else setIndex((i) => (i - 1 + banners.length) % banners.length);
+  }
+
+  function handleSlideLinkClick(e: React.MouseEvent) {
+    if (didDragRef.current) {
+      e.preventDefault();
+      didDragRef.current = false;
+    }
   }
 
   if (banners.length === 0) return null;
@@ -68,9 +78,9 @@ export function BannerCarousel({ banners }: { banners: Banner[] }) {
     <>
       {/* Mobile (<768px): full-bleed hero banner, sob o header */}
       <div
-        className="relative left-1/2 right-1/2 -mx-[50vw] w-screen overflow-hidden md:hidden"
-        onTouchStart={handleTouchStart}
-        onTouchEnd={handleTouchEnd}
+        className="relative left-1/2 right-1/2 -mx-[50vw] w-screen touch-pan-y select-none overflow-hidden md:hidden"
+        onPointerDown={handlePointerDown}
+        onPointerUp={handlePointerUp}
       >
         <div className="relative h-[62svh] min-h-[400px] max-h-[560px] w-full">
           <Image
@@ -96,10 +106,7 @@ export function BannerCarousel({ banners }: { banners: Banner[] }) {
                     key={b.id}
                     type="button"
                     aria-label={`Ir para banner ${i + 1}`}
-                    onClick={() => {
-                      registerInteraction();
-                      setIndex(i);
-                    }}
+                    onClick={() => goToDot(i)}
                     className={cn(
                       "h-1.5 rounded-full transition-all",
                       i === index ? "w-6 bg-white" : "w-1.5 bg-white/50",
@@ -120,34 +127,17 @@ export function BannerCarousel({ banners }: { banners: Banner[] }) {
               </Link>
             )}
           </div>
-
-          {banners.length > 1 && (
-            <>
-              <button
-                type="button"
-                aria-label="Banner anterior"
-                onClick={goPrev}
-                className="absolute left-3 top-1/2 -translate-y-1/2 rounded-full bg-white/90 p-2 text-pine-900 shadow-sm hover:bg-white focus-visible:outline-2 focus-visible:outline-mint-600"
-              >
-                <ChevronLeft className="size-4" />
-              </button>
-              <button
-                type="button"
-                aria-label="Próximo banner"
-                onClick={goNext}
-                className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full bg-white/90 p-2 text-pine-900 shadow-sm hover:bg-white focus-visible:outline-2 focus-visible:outline-mint-600"
-              >
-                <ChevronRight className="size-4" />
-              </button>
-            </>
-          )}
         </div>
         <div id="mobile-hero-sentinel" aria-hidden className="h-0" />
       </div>
 
-      {/* Desktop (>=768px): comportamento original, inalterado */}
-      <div className="relative hidden overflow-hidden rounded-2xl md:block">
-        <Link href={banner.href} className="block">
+      {/* Desktop (>=768px): mesmo carrossel, sem as setas, com arrasto pelo mouse */}
+      <div
+        className="relative touch-pan-y select-none overflow-hidden rounded-2xl md:block hidden"
+        onPointerDown={handlePointerDown}
+        onPointerUp={handlePointerUp}
+      >
+        <Link href={banner.href} className="block" draggable={false} onClick={handleSlideLinkClick}>
           <div className="relative aspect-[16/9] sm:aspect-[21/9]">
             <Image
               src={banner.image_url}
@@ -168,38 +158,20 @@ export function BannerCarousel({ banners }: { banners: Banner[] }) {
         </Link>
 
         {banners.length > 1 && (
-          <>
-            <button
-              type="button"
-              aria-label="Banner anterior"
-              onClick={() => setIndex((i) => (i - 1 + banners.length) % banners.length)}
-              className="absolute left-3 top-1/2 -translate-y-1/2 rounded-full bg-white/90 p-2 text-pine-900 shadow-sm hover:bg-white focus-visible:outline-2 focus-visible:outline-mint-600"
-            >
-              <ChevronLeft className="size-4" />
-            </button>
-            <button
-              type="button"
-              aria-label="Próximo banner"
-              onClick={() => setIndex((i) => (i + 1) % banners.length)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full bg-white/90 p-2 text-pine-900 shadow-sm hover:bg-white focus-visible:outline-2 focus-visible:outline-mint-600"
-            >
-              <ChevronRight className="size-4" />
-            </button>
-            <div className="absolute bottom-3 left-1/2 flex -translate-x-1/2 gap-1.5">
-              {banners.map((b, i) => (
-                <button
-                  key={b.id}
-                  type="button"
-                  aria-label={`Ir para banner ${i + 1}`}
-                  onClick={() => setIndex(i)}
-                  className={cn(
-                    "h-1.5 rounded-full transition-all",
-                    i === index ? "w-6 bg-white" : "w-1.5 bg-white/50",
-                  )}
-                />
-              ))}
-            </div>
-          </>
+          <div className="absolute bottom-3 left-1/2 flex -translate-x-1/2 gap-1.5">
+            {banners.map((b, i) => (
+              <button
+                key={b.id}
+                type="button"
+                aria-label={`Ir para banner ${i + 1}`}
+                onClick={() => goToDot(i)}
+                className={cn(
+                  "h-1.5 rounded-full transition-all",
+                  i === index ? "w-6 bg-white" : "w-1.5 bg-white/50",
+                )}
+              />
+            ))}
+          </div>
         )}
       </div>
     </>
