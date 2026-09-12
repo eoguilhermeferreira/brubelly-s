@@ -62,21 +62,14 @@ export function HeaderShell({ categories }: { categories: Category[] }) {
           <>
             <div className="flex items-center gap-2">
               <MobileNav categories={categories} light={transparent} />
-              <Link href="/" aria-label={STORE.name} className="relative">
-                <span
-                  className={cn(
-                    "absolute inset-0 -m-1.5 rounded-full bg-white/85 transition-opacity md:opacity-0",
-                    transparent ? "max-md:opacity-100" : "max-md:opacity-0",
-                  )}
-                  aria-hidden
-                />
+              <Link href="/" aria-label={STORE.name}>
                 <Image
                   src={STORE.logo}
                   alt={STORE.name}
                   width={STORE.logoWidth}
                   height={STORE.logoHeight}
                   priority
-                  className="relative h-11 w-auto sm:h-12"
+                  className="h-11 w-auto sm:h-12"
                 />
               </Link>
             </div>
