@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { DeliveryMethodBadge } from "@/components/pedido/delivery-method-badge";
 import { OrderStatusBadge } from "@/components/pedido/order-status-badge";
 import {
   Table,
@@ -19,6 +20,7 @@ export function RecentOrdersTable({ orders }: { orders: Order[] }) {
         <TableRow>
           <TableHead>Pedido</TableHead>
           <TableHead>Cliente</TableHead>
+          <TableHead>Entrega</TableHead>
           <TableHead>Data</TableHead>
           <TableHead>Status</TableHead>
           <TableHead className="text-right">Total</TableHead>
@@ -33,6 +35,9 @@ export function RecentOrdersTable({ orders }: { orders: Order[] }) {
               </Link>
             </TableCell>
             <TableCell>{order.customer_name}</TableCell>
+            <TableCell>
+              <DeliveryMethodBadge method={order.delivery_method} />
+            </TableCell>
             <TableCell className="text-muted-foreground">{formatDate(order.created_at)}</TableCell>
             <TableCell>
               <OrderStatusBadge status={order.status} />

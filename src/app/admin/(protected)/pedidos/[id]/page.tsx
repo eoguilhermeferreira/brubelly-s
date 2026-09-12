@@ -17,7 +17,7 @@ export default async function AdminPedidoDetailPage({ params }: PageProps<"/admi
         <Link href="/admin/pedidos" className="flex w-fit items-center gap-1.5 text-sm text-muted-foreground hover:text-pine-900">
           <ArrowLeft className="size-4" /> Voltar para pedidos
         </Link>
-        <OrderStatusSelect orderId={order.id} status={order.status} />
+        <OrderStatusSelect orderId={order.id} status={order.status} deliveryMethod={order.delivery_method} />
       </div>
 
       <div className="rounded-2xl border border-border bg-white p-5">

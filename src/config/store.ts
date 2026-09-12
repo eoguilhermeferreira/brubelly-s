@@ -45,6 +45,8 @@ export const STORE = {
     flatRateCents: 1990,
     freeShippingThresholdCents: 29900,
     originZipCode: "18700-090",
+    /** Entrega local feita pela própria loja (motoboy próprio) dentro da cidade. */
+    localDeliveryCents: 1000,
   },
 
   checkout: {

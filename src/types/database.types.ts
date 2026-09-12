@@ -62,7 +62,10 @@ export type OrderStatus =
   | "em_separacao"
   | "enviado"
   | "entregue"
+  | "pronto_para_retirar"
   | "cancelado";
+
+export type DeliveryMethod = "entrega" | "retirada";
 
 export type PaymentStatus = "pending" | "approved" | "rejected" | "refunded";
 
@@ -93,6 +96,7 @@ export type Order = {
   customer_name: string;
   customer_email: string;
   customer_phone: string;
+  delivery_method: DeliveryMethod;
   shipping_address: ShippingAddress;
   subtotal_cents: number;
   shipping_cents: number;

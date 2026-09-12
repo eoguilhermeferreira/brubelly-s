@@ -1,5 +1,6 @@
 "use server";
 
+import { STORE } from "@/config/store";
 import { checkoutSchema, type CheckoutFieldErrors } from "@/lib/checkout-schema";
 import { orderCode } from "@/lib/format";
 import { createCheckoutPreference } from "@/lib/mercadopago";
@@ -134,13 +135,13 @@ export async function createOrder({ form, lines, shippingOptionId }: CreateOrder
         }
       : {
           recipient: parsed.data.name,
-          cep: "",
-          street: "Retirada na loja",
-          number: "",
+          cep: STORE.address.zipCode,
+          street: STORE.address.street,
+          number: STORE.address.number,
           complement: null,
           neighborhood: "",
-          city: "",
-          state: "",
+          city: STORE.address.city,
+          state: STORE.address.state,
         };
 
   // Código do pedido: tenta algumas vezes em caso de colisão (constraint
@@ -157,6 +158,7 @@ export async function createOrder({ form, lines, shippingOptionId }: CreateOrder
         customer_name: parsed.data.name,
         customer_email: parsed.data.email,
         customer_phone: parsed.data.phone,
+        delivery_method: parsed.data.deliveryMethod,
         shipping_address: shippingAddress,
         subtotal_cents: subtotalCents,
         shipping_cents: shipping.priceCents,

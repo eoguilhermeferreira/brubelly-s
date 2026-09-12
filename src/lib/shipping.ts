@@ -29,3 +29,31 @@ export function getFlatRateShipping(subtotalCents: number): ShippingOption {
     estimatedDays: 7,
   };
 }
+
+export const LOCAL_DELIVERY_OPTION_ID = "entrega-local";
+
+/**
+ * Entrega local feita pela própria loja (motoboy próprio), sem passar por
+ * transportadora — usada quando o CEP de destino é da mesma cidade da loja.
+ */
+export function getLocalDeliveryOption(): ShippingOption {
+  return {
+    id: LOCAL_DELIVERY_OPTION_ID,
+    name: `Entrega em ${STORE.address.city}/${STORE.address.state}`,
+    priceCents: STORE.shipping.localDeliveryCents,
+    estimatedDays: 1,
+  };
+}
+
+function normalize(value: string): string {
+  return value
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .toLowerCase()
+    .trim();
+}
+
+/** Compara cidade/UF de um CEP com o endereço da loja, ignorando maiúsculas/acentos. */
+export function isSameCityAsStore(city: string, state: string): boolean {
+  return normalize(city) === normalize(STORE.address.city) && normalize(state) === normalize(STORE.address.state);
+}

@@ -1,4 +1,6 @@
+import { DeliveryMethodBadge } from "@/components/pedido/delivery-method-badge";
 import { OrderStatusBadge } from "@/components/pedido/order-status-badge";
+import { STORE } from "@/config/store";
 import { formatDateTime, formatPrice } from "@/lib/format";
 import type { Order } from "@/types/database.types";
 
@@ -10,7 +12,10 @@ export function OrderSummary({ order }: { order: Order }) {
           <p className="font-tag text-lg font-semibold text-pine-900">{order.code}</p>
           <p className="text-sm text-muted-foreground">Feito em {formatDateTime(order.created_at)}</p>
         </div>
-        <OrderStatusBadge status={order.status} />
+        <div className="flex items-center gap-2">
+          <DeliveryMethodBadge method={order.delivery_method} />
+          <OrderStatusBadge status={order.status} />
+        </div>
       </div>
 
       <div className="rounded-xl border border-border bg-white p-5">
@@ -48,16 +53,32 @@ export function OrderSummary({ order }: { order: Order }) {
       </div>
 
       <div className="rounded-xl border border-border bg-white p-5">
-        <p className="font-display font-semibold text-pine-900">Entrega</p>
-        <p className="mt-2 text-sm text-pine-900">{order.shipping_address.recipient}</p>
-        <p className="text-sm text-muted-foreground">
-          {order.shipping_address.street}, {order.shipping_address.number}
-          {order.shipping_address.complement ? ` — ${order.shipping_address.complement}` : ""}
+        <p className="font-display font-semibold text-pine-900">
+          {order.delivery_method === "retirada" ? "Retirada na loja" : "Entrega"}
         </p>
-        <p className="text-sm text-muted-foreground">
-          {order.shipping_address.neighborhood}, {order.shipping_address.city} - {order.shipping_address.state}
-        </p>
-        <p className="text-sm text-muted-foreground">CEP {order.shipping_address.cep}</p>
+        {order.delivery_method === "retirada" ? (
+          <>
+            <p className="mt-2 text-sm text-pine-900">{order.shipping_address.recipient}</p>
+            <p className="text-sm text-muted-foreground">
+              {STORE.address.street}, {STORE.address.number} — {STORE.address.city}/{STORE.address.state}
+            </p>
+            <p className="mt-1 text-xs text-muted-foreground">
+              Chame o cliente no WhatsApp pra combinar o dia e horário de retirada.
+            </p>
+          </>
+        ) : (
+          <>
+            <p className="mt-2 text-sm text-pine-900">{order.shipping_address.recipient}</p>
+            <p className="text-sm text-muted-foreground">
+              {order.shipping_address.street}, {order.shipping_address.number}
+              {order.shipping_address.complement ? ` — ${order.shipping_address.complement}` : ""}
+            </p>
+            <p className="text-sm text-muted-foreground">
+              {order.shipping_address.neighborhood}, {order.shipping_address.city} - {order.shipping_address.state}
+            </p>
+            <p className="text-sm text-muted-foreground">CEP {order.shipping_address.cep}</p>
+          </>
+        )}
       </div>
     </div>
   );

@@ -12,9 +12,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ORDER_STATUS_LABELS } from "@/lib/product-constants";
-import type { OrderStatus } from "@/types/database.types";
+import type { DeliveryMethod, OrderStatus } from "@/types/database.types";
 
-const STATUSES: OrderStatus[] = [
+const ENTREGA_STATUSES: OrderStatus[] = [
   "aguardando_pagamento",
   "pago",
   "em_separacao",
@@ -23,8 +23,25 @@ const STATUSES: OrderStatus[] = [
   "cancelado",
 ];
 
-export function OrderStatusSelect({ orderId, status }: { orderId: string; status: OrderStatus }) {
+const RETIRADA_STATUSES: OrderStatus[] = [
+  "aguardando_pagamento",
+  "pago",
+  "em_separacao",
+  "pronto_para_retirar",
+  "cancelado",
+];
+
+export function OrderStatusSelect({
+  orderId,
+  status,
+  deliveryMethod,
+}: {
+  orderId: string;
+  status: OrderStatus;
+  deliveryMethod: DeliveryMethod;
+}) {
   const [pending, startTransition] = React.useTransition();
+  const statuses = deliveryMethod === "retirada" ? RETIRADA_STATUSES : ENTREGA_STATUSES;
 
   function handleChange(value: string) {
     startTransition(async () => {
@@ -43,7 +60,7 @@ export function OrderStatusSelect({ orderId, status }: { orderId: string; status
         <SelectValue />
       </SelectTrigger>
       <SelectContent>
-        {STATUSES.map((s) => (
+        {statuses.map((s) => (
           <SelectItem key={s} value={s}>
             {ORDER_STATUS_LABELS[s]}
           </SelectItem>

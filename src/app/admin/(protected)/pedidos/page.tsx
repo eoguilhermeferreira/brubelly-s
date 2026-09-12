@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { DeliveryMethodBadge } from "@/components/pedido/delivery-method-badge";
 import { OrderStatusBadge } from "@/components/pedido/order-status-badge";
 import {
   Table,
@@ -30,6 +31,7 @@ export default async function AdminPedidosPage() {
             <TableRow>
               <TableHead>Pedido</TableHead>
               <TableHead>Cliente</TableHead>
+              <TableHead>Entrega</TableHead>
               <TableHead>Data</TableHead>
               <TableHead>Pagamento</TableHead>
               <TableHead>Status</TableHead>
@@ -45,6 +47,9 @@ export default async function AdminPedidosPage() {
                   </Link>
                 </TableCell>
                 <TableCell>{order.customer_name}</TableCell>
+                <TableCell>
+                  <DeliveryMethodBadge method={order.delivery_method} />
+                </TableCell>
                 <TableCell className="text-muted-foreground">{formatDate(order.created_at)}</TableCell>
                 <TableCell className="text-muted-foreground capitalize">{order.payment_status}</TableCell>
                 <TableCell>

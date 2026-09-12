@@ -5,6 +5,7 @@ import { ChevronRight } from "lucide-react";
 
 import { AddToCartForm } from "@/components/store/add-to-cart-form";
 import { ProductCard } from "@/components/store/product-card";
+import { ProductShippingCalculator } from "@/components/store/product-shipping-calculator";
 import { Badge } from "@/components/ui/badge";
 import { formatPrice } from "@/lib/format";
 import { getCategoryName, getProductBySlug, getRelatedProducts } from "@/lib/queries";
@@ -80,6 +81,8 @@ export default async function ProductPage({ params }: PageProps<"/produto/[slug]
           <div className="mt-6">
             <AddToCartForm product={product} />
           </div>
+
+          <ProductShippingCalculator productId={product.id} />
 
           <dl className="mt-8 grid grid-cols-2 gap-x-4 gap-y-2 border-t border-border pt-6 text-sm">
             <dt className="text-muted-foreground">Categoria</dt>

@@ -10,6 +10,7 @@ export const ORDER_STATUS_LABELS: Record<string, string> = {
   em_separacao: "Em separação",
   enviado: "Enviado",
   entregue: "Entregue",
+  pronto_para_retirar: "Pronto para retirar",
   cancelado: "Cancelado",
 };
 
@@ -19,5 +20,6 @@ export const ORDER_STATUS_TONE: Record<string, "default" | "rose" | "mint" | "go
   em_separacao: "outline",
   enviado: "mint",
   entregue: "default",
+  pronto_para_retirar: "mint",
   cancelado: "rose",
 };

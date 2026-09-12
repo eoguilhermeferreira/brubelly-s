@@ -1,7 +1,8 @@
 import "server-only";
 
 import { STORE } from "@/config/store";
-import { getFlatRateShipping, type ShippingOption } from "@/lib/shipping";
+import { getFlatRateShipping, getLocalDeliveryOption, isSameCityAsStore, type ShippingOption } from "@/lib/shipping";
+import { lookupCep } from "@/lib/viacep";
 
 type QuoteParams = {
   destinationCep: string;
@@ -10,15 +11,25 @@ type QuoteParams = {
 };
 
 /**
- * Cotação real via Melhor Envio. Se o token não estiver configurado, ou a
- * chamada falhar, cai no frete fixo (`getFlatRateShipping`) — nunca deixa o
- * checkout travado por causa da transportadora.
+ * Cotação de frete. Regra de prioridade:
+ * 1. Se o CEP for da mesma cidade/UF da loja, a entrega é feita pela própria
+ *    loja (motoboy próprio) — nem consulta transportadora, só devolve a
+ *    entrega local com valor fixo.
+ * 2. Senão, cotação real via Melhor Envio. Se o token não estiver
+ *    configurado, ou a chamada falhar, cai no frete fixo
+ *    (`getFlatRateShipping`) — nunca deixa o checkout travado por causa da
+ *    transportadora.
  */
 export async function quoteShipping({
   destinationCep,
   totalWeightGrams,
   subtotalCents,
 }: QuoteParams): Promise<ShippingOption[]> {
+  const address = await lookupCep(destinationCep);
+  if (address && isSameCityAsStore(address.localidade, address.uf)) {
+    return [getLocalDeliveryOption()];
+  }
+
   const token = process.env.MELHOR_ENVIO_TOKEN;
 
   if (!token) {
