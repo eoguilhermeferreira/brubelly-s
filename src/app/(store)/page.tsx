@@ -20,26 +20,34 @@ export default async function HomePage() {
   return (
     <div className="mx-auto max-w-6xl px-4 pb-20 sm:px-6">
       <section className="grid gap-6 pt-6 sm:pt-10 lg:grid-cols-[1.1fr_1fr] lg:gap-10">
-        <div className="flex flex-col justify-center rounded-2xl bg-mint-400/40 px-6 py-10 sm:px-10 sm:py-14">
-          <span className="w-fit rounded-full bg-white/70 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-pine-900">
-            Nova coleção
-          </span>
-          <h1 className="mt-4 max-w-md font-display text-4xl font-bold leading-[1.05] text-pine-900 sm:text-5xl">
-            Roupinhas com carinho de boutique
-          </h1>
-          <p className="mt-4 max-w-sm text-[15px] text-pine-900/80">
-            Peças macias, coloridas e feitas para acompanhar cada travessura —
-            do primeiro bodinho ao look do primeiro dia de aula.
-          </p>
-          <div className="mt-6 flex flex-wrap gap-3">
-            <Button size="lg" asChild>
-              <Link href="/produtos">
-                Ver coleção <ArrowRight className="size-4" />
-              </Link>
-            </Button>
-            <Button size="lg" variant="outline" asChild>
-              <Link href="/categoria/bebe">Linha bebê</Link>
-            </Button>
+        <div className="relative flex flex-col justify-center overflow-hidden rounded-2xl bg-mint-400/40 px-6 py-10 sm:px-10 sm:py-14">
+          <Image
+            src="/banners/hero-flatlay.jpg"
+            alt="Roupinhas e acessórios infantis dispostos com carinho"
+            fill
+            priority
+            sizes="(min-width: 1024px) 55vw, 100vw"
+            className="object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/80 to-white/30" />
+          <div className="relative">
+            <span className="w-fit rounded-full bg-white/70 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-pine-900">
+              Nova coleção
+            </span>
+            <h1 className="mt-4 max-w-md font-display text-4xl font-bold leading-[1.05] text-pine-900 sm:text-5xl">
+              Roupinhas com carinho de boutique
+            </h1>
+            <p className="mt-4 max-w-sm text-[15px] text-pine-900/80">
+              Peças macias, coloridas e feitas para acompanhar cada travessura —
+              do primeiro bodinho ao look do primeiro dia de aula.
+            </p>
+            <div className="mt-6 flex flex-wrap gap-3">
+              <Button size="lg" asChild>
+                <Link href="/produtos">
+                  Ver coleção <ArrowRight className="size-4" />
+                </Link>
+              </Button>
+            </div>
           </div>
         </div>
 
