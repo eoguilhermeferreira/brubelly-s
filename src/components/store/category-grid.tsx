@@ -5,7 +5,7 @@ import type { Category } from "@/types/database.types";
 
 export function CategoryGrid({ categories }: { categories: Category[] }) {
   return (
-    <div className="flex gap-4 overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 sm:grid sm:grid-cols-5 sm:overflow-visible">
+    <div className="flex gap-4 overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 sm:grid sm:grid-cols-6 sm:overflow-visible">
       {categories.map((category) => {
         const Icon = getCategoryIcon(category.slug);
         return (
