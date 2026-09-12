@@ -94,6 +94,19 @@ export default async function HomePage() {
         </div>
       </section>
 
+      <section className="mt-14 flex justify-center">
+        <div className="relative aspect-[6/7] w-full max-w-md overflow-hidden rounded-2xl">
+          <Image
+            src="/banners/promo-menino-folhagem.jpg"
+            alt="Coleção verão para meninos"
+            fill
+            priority={false}
+            sizes="(min-width: 640px) 400px, 90vw"
+            className="object-cover object-[50%_12%]"
+          />
+        </div>
+      </section>
+
       <section className="mt-16 grid gap-4 rounded-2xl bg-rose-100 p-6 sm:grid-cols-3 sm:p-8">
         <div className="flex items-start gap-3">
           <Truck className="mt-0.5 size-6 shrink-0 text-rose-600" strokeWidth={1.5} />
