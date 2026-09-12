@@ -1,6 +1,9 @@
 import { Fragment } from "react";
+import Link from "next/link";
+import { Plus } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -19,9 +22,16 @@ export default async function AdminCategoriasPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <div>
-        <h1 className="font-display text-2xl font-bold text-pine-900">Categorias</h1>
-        <p className="text-sm text-muted-foreground">{categories.length} categorias cadastradas</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="font-display text-2xl font-bold text-pine-900">Categorias</h1>
+          <p className="text-sm text-muted-foreground">{categories.length} categorias cadastradas</p>
+        </div>
+        <Button asChild>
+          <Link href="/admin/categorias/nova">
+            <Plus className="size-4" /> Nova categoria
+          </Link>
+        </Button>
       </div>
 
       <div className="rounded-2xl border border-border bg-white p-2">
@@ -37,7 +47,11 @@ export default async function AdminCategoriasPage() {
             {parents.map((parent) => (
               <Fragment key={parent.id}>
                 <TableRow>
-                  <TableCell className="font-medium text-pine-900">{parent.name}</TableCell>
+                  <TableCell>
+                    <Link href={`/admin/categorias/${parent.id}`} className="font-medium text-pine-900 hover:text-rose-600">
+                      {parent.name}
+                    </Link>
+                  </TableCell>
                   <TableCell className="font-tag text-xs text-muted-foreground">/{parent.slug}</TableCell>
                   <TableCell>
                     <Badge variant="mint">Principal</Badge>
@@ -47,7 +61,11 @@ export default async function AdminCategoriasPage() {
                   .filter((c) => c.parent_id === parent.id)
                   .map((sub) => (
                     <TableRow key={sub.id}>
-                      <TableCell className="pl-8 text-pine-900/80">↳ {sub.name}</TableCell>
+                      <TableCell className="pl-8">
+                        <Link href={`/admin/categorias/${sub.id}`} className="text-pine-900/80 hover:text-rose-600">
+                          ↳ {sub.name}
+                        </Link>
+                      </TableCell>
                       <TableCell className="font-tag text-xs text-muted-foreground">/{sub.slug}</TableCell>
                       <TableCell>
                         <Badge variant="outline">Subcategoria</Badge>
@@ -59,10 +77,6 @@ export default async function AdminCategoriasPage() {
           </TableBody>
         </Table>
       </div>
-
-      <p className="text-xs text-muted-foreground">
-        Modo demonstração: somente leitura. Edição habilitada ao conectar o Supabase.
-      </p>
     </div>
   );
 }

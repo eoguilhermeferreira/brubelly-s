@@ -1,7 +1,8 @@
 import Image from "next/image";
+import Link from "next/link";
 import { Plus } from "lucide-react";
 
-import { Badge } from "@/components/ui/badge";
+import { ProductActiveToggle } from "@/components/admin/product-active-toggle";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -27,8 +28,10 @@ export default async function AdminProdutosPage() {
           <h1 className="font-display text-2xl font-bold text-pine-900">Produtos</h1>
           <p className="text-sm text-muted-foreground">{products.length} produtos no catálogo</p>
         </div>
-        <Button disabled title="Disponível ao conectar o Supabase">
-          <Plus className="size-4" /> Novo produto
+        <Button asChild>
+          <Link href="/admin/produtos/novo">
+            <Plus className="size-4" /> Novo produto
+          </Link>
         </Button>
       </div>
 
@@ -47,14 +50,14 @@ export default async function AdminProdutosPage() {
             {products.map((product) => (
               <TableRow key={product.id}>
                 <TableCell>
-                  <div className="flex items-center gap-3">
+                  <Link href={`/admin/produtos/${product.id}`} className="flex items-center gap-3 hover:text-rose-600">
                     {product.images[0] && (
-                      <div className="relative size-10 overflow-hidden rounded-lg bg-mint-50">
+                      <div className="relative size-10 shrink-0 overflow-hidden rounded-lg bg-mint-50">
                         <Image src={product.images[0].url} alt="" fill sizes="40px" className="object-cover" />
                       </div>
                     )}
                     <span className="font-medium text-pine-900">{product.name}</span>
-                  </div>
+                  </Link>
                 </TableCell>
                 <TableCell className="text-muted-foreground">{categoryName(product.category_id)}</TableCell>
                 <TableCell>{formatPrice(product.price_cents)}</TableCell>
@@ -62,20 +65,13 @@ export default async function AdminProdutosPage() {
                   {product.stock}
                 </TableCell>
                 <TableCell>
-                  <Badge variant={product.active ? "mint" : "outline"}>
-                    {product.active ? "Ativo" : "Inativo"}
-                  </Badge>
+                  <ProductActiveToggle productId={product.id} active={product.active} />
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </div>
-
-      <p className="text-xs text-muted-foreground">
-        Modo demonstração: catálogo somente leitura. Criar/editar produtos fica disponível assim que o
-        Supabase estiver configurado (ver README).
-      </p>
     </div>
   );
 }

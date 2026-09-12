@@ -57,6 +57,13 @@ export async function getCategoryBySlug(slug: string): Promise<Category | null> 
   return data;
 }
 
+export async function getCategoryById(id: string): Promise<Category | null> {
+  const supabase = createPublicClient();
+  const { data, error } = await supabase.from("categories").select("*").eq("id", id).maybeSingle();
+  if (error) throw error;
+  return data;
+}
+
 export async function getSubcategories(parentId: string): Promise<Category[]> {
   const supabase = createPublicClient();
   const { data, error } = await supabase
@@ -75,6 +82,20 @@ export async function getBanners(): Promise<Banner[]> {
     .select("*")
     .eq("active", true)
     .order("position");
+  if (error) throw error;
+  return data;
+}
+
+export async function getAllBanners(): Promise<Banner[]> {
+  const supabase = createPublicClient();
+  const { data, error } = await supabase.from("banners").select("*").order("position");
+  if (error) throw error;
+  return data;
+}
+
+export async function getBannerById(id: string): Promise<Banner | null> {
+  const supabase = createPublicClient();
+  const { data, error } = await supabase.from("banners").select("*").eq("id", id).maybeSingle();
   if (error) throw error;
   return data;
 }
@@ -164,6 +185,13 @@ export async function getAllProductsAdmin(): Promise<Product[]> {
   const { data, error } = await supabase.from("products").select(PRODUCT_SELECT);
   if (error) throw error;
   return data.map(mapProduct);
+}
+
+export async function getProductById(id: string): Promise<Product | null> {
+  const supabase = createPublicClient();
+  const { data, error } = await supabase.from("products").select(PRODUCT_SELECT).eq("id", id).maybeSingle();
+  if (error) throw error;
+  return data ? mapProduct(data) : null;
 }
 
 export async function getOrders(): Promise<Order[]> {

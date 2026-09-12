@@ -46,3 +46,17 @@ export function slugify(value: string): string {
 export function orderCode(sequence: number): string {
   return `BB${String(sequence).padStart(5, "0")}`;
 }
+
+/** Converte o valor de um <input type="number" step="0.01"> (ex.: "159.9") em centavos. */
+export function parsePriceInput(value: string): number | null {
+  const trimmed = value.trim();
+  if (!trimmed) return null;
+  const parsed = Number(trimmed);
+  if (Number.isNaN(parsed)) return null;
+  return Math.round(parsed * 100);
+}
+
+/** Centavos -> "159.90", para preencher um <input type="number" step="0.01">. */
+export function centsToInputValue(cents: number): string {
+  return (cents / 100).toFixed(2);
+}
