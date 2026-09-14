@@ -239,6 +239,25 @@ export async function getCustomers(): Promise<Customer[]> {
   return data;
 }
 
+export async function getCustomerById(id: string): Promise<Customer | null> {
+  const supabase = await createServerClient();
+  const { data, error } = await supabase.from("customers").select("*").eq("id", id).maybeSingle();
+  if (error) throw error;
+  return data;
+}
+
+/** Pedidos de um cliente — não há FK entre orders e customers, o vínculo é pelo e-mail. */
+export async function getOrdersByCustomerEmail(email: string): Promise<Order[]> {
+  const supabase = await createServerClient();
+  const { data, error } = await supabase
+    .from("orders")
+    .select("*, items:order_items(*)")
+    .eq("customer_email", email)
+    .order("created_at", { ascending: false });
+  if (error) throw error;
+  return data as Order[];
+}
+
 export async function getDashboardStats() {
   const supabase = await createServerClient();
   const [{ data: orders, error: ordersError }, { count: totalProducts }, { count: totalCustomers }] =

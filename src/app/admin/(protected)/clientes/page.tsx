@@ -1,3 +1,4 @@
+import { ClickableTableRow } from "@/components/admin/clickable-table-row";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   Table,
@@ -7,7 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { formatDate, formatPrice } from "@/lib/format";
+import { formatDate, formatPhone, formatPrice } from "@/lib/format";
 import { getCustomers } from "@/lib/queries";
 
 export const metadata = { title: "Clientes" };
@@ -27,7 +28,8 @@ export default async function AdminClientesPage() {
           <TableHeader>
             <TableRow>
               <TableHead>Cliente</TableHead>
-              <TableHead>Contato</TableHead>
+              <TableHead>E-mail</TableHead>
+              <TableHead>WhatsApp</TableHead>
               <TableHead>Pedidos</TableHead>
               <TableHead>Total gasto</TableHead>
               <TableHead>Desde</TableHead>
@@ -35,7 +37,7 @@ export default async function AdminClientesPage() {
           </TableHeader>
           <TableBody>
             {customers.map((customer) => (
-              <TableRow key={customer.id}>
+              <ClickableTableRow key={customer.id} href={`/admin/clientes/${customer.id}`}>
                 <TableCell>
                   <div className="flex items-center gap-3">
                     <Avatar>
@@ -45,10 +47,11 @@ export default async function AdminClientesPage() {
                   </div>
                 </TableCell>
                 <TableCell className="text-muted-foreground">{customer.email}</TableCell>
+                <TableCell className="text-muted-foreground">{formatPhone(customer.phone)}</TableCell>
                 <TableCell>{customer.orders_count}</TableCell>
                 <TableCell>{formatPrice(customer.total_spent_cents)}</TableCell>
                 <TableCell className="text-muted-foreground">{formatDate(customer.created_at)}</TableCell>
-              </TableRow>
+              </ClickableTableRow>
             ))}
           </TableBody>
         </Table>

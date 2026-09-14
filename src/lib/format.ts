@@ -33,6 +33,21 @@ export function formatCep(value: string): string {
   return `${digits.slice(0, 5)}-${digits.slice(5)}`;
 }
 
+/** "14997471297" -> "(14) 99747-1297" (também cobre fixo de 10 dígitos). */
+export function formatPhone(value: string): string {
+  const digits = value.replace(/\D/g, "");
+  if (digits.length === 11) return `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7)}`;
+  if (digits.length === 10) return `(${digits.slice(0, 2)}) ${digits.slice(2, 6)}-${digits.slice(6)}`;
+  return value;
+}
+
+/** Monta o link do WhatsApp a partir de um telefone brasileiro (DDD + número, sem 55) e uma mensagem. */
+export function buildWhatsappUrl(phone: string, message: string): string {
+  const digits = phone.replace(/\D/g, "");
+  const withCountryCode = digits.startsWith("55") ? digits : `55${digits}`;
+  return `https://wa.me/${withCountryCode}${message ? `?text=${encodeURIComponent(message)}` : ""}`;
+}
+
 export function slugify(value: string): string {
   return value
     .normalize("NFD")
