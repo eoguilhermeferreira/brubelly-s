@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { DeleteOrderButton } from "@/components/admin/delete-order-button";
 import { DeliveryMethodBadge } from "@/components/pedido/delivery-method-badge";
 import { OrderStatusBadge } from "@/components/pedido/order-status-badge";
 import {
@@ -36,6 +37,7 @@ export default async function AdminPedidosPage() {
               <TableHead>Pagamento</TableHead>
               <TableHead>Status</TableHead>
               <TableHead className="text-right">Total</TableHead>
+              <TableHead className="w-10" />
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -56,6 +58,9 @@ export default async function AdminPedidosPage() {
                   <OrderStatusBadge status={order.status} />
                 </TableCell>
                 <TableCell className="text-right font-medium">{formatPrice(order.total_cents)}</TableCell>
+                <TableCell>
+                  <DeleteOrderButton orderId={order.id} orderCode={order.code} />
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>

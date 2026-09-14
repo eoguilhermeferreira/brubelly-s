@@ -269,3 +269,9 @@ export async function updateOrderStatusInDb(orderId: string, status: OrderStatus
   const { error } = await supabase.from("orders").update({ status }).eq("id", orderId);
   if (error) throw error;
 }
+
+export async function deleteOrderFromDb(orderId: string) {
+  const supabase = await createServerClient();
+  const { error } = await supabase.from("orders").delete().eq("id", orderId);
+  if (error) throw error;
+}

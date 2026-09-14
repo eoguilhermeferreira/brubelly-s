@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 
+import { DeleteOrderButton } from "@/components/admin/delete-order-button";
 import { OrderStatusSelect } from "@/components/admin/order-status-select";
 import { OrderSummary } from "@/components/pedido/order-summary";
 import { getOrderById } from "@/lib/queries";
@@ -17,7 +18,10 @@ export default async function AdminPedidoDetailPage({ params }: PageProps<"/admi
         <Link href="/admin/pedidos" className="flex w-fit items-center gap-1.5 text-sm text-muted-foreground hover:text-pine-900">
           <ArrowLeft className="size-4" /> Voltar para pedidos
         </Link>
-        <OrderStatusSelect orderId={order.id} status={order.status} deliveryMethod={order.delivery_method} />
+        <div className="flex items-center gap-2">
+          <OrderStatusSelect orderId={order.id} status={order.status} deliveryMethod={order.delivery_method} />
+          <DeleteOrderButton orderId={order.id} orderCode={order.code} redirectTo="/admin/pedidos" />
+        </div>
       </div>
 
       <div className="rounded-2xl border border-border bg-white p-5">
