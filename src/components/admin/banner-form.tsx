@@ -6,6 +6,7 @@ import { Loader2 } from "lucide-react";
 
 import { saveBanner, type BannerFormState } from "@/app/admin/(protected)/banners/actions";
 import { Button } from "@/components/ui/button";
+import { ImageUploadField } from "@/components/admin/image-upload-field";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
@@ -32,8 +33,13 @@ export function BannerForm({ banner }: { banner: Banner | null }) {
         </div>
 
         <div className="flex flex-col gap-1.5 sm:col-span-2">
-          <Label htmlFor="image_url">URL da imagem</Label>
-          <Input id="image_url" name="image_url" defaultValue={banner?.image_url} required />
+          <ImageUploadField
+            name="image_url"
+            label="Imagem do banner"
+            folder="banners"
+            defaultValue={banner?.image_url}
+            required
+          />
         </div>
 
         <div className="flex flex-col gap-1.5">
