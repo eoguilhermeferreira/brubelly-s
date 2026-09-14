@@ -138,7 +138,7 @@ export function BannerCarousel({ banners }: { banners: Banner[] }) {
         onPointerUp={handlePointerUp}
       >
         <Link href={banner.href} className="block" draggable={false} onClick={handleSlideLinkClick}>
-          <div className="relative aspect-[16/9] sm:aspect-[21/9]">
+          <div className="relative aspect-[16/9]">
             <Image
               src={banner.image_url}
               alt={banner.title}
