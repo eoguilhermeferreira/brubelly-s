@@ -87,6 +87,18 @@ export default async function HomePage() {
             sizes="100vw"
             className="object-cover object-[50%_20%]"
           />
+          <div className="absolute inset-0 bg-gradient-to-t from-pine-900/70 via-pine-900/10 to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 flex flex-col items-start gap-2 p-6 sm:p-10">
+            <span className="w-fit rounded-full bg-white/90 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-pine-900">
+              Novidade adidas
+            </span>
+            <h2 className="max-w-sm font-display text-2xl font-bold leading-tight text-white sm:text-4xl">
+              Conforto e atitude adidas para ela
+            </h2>
+            <p className="max-w-xs text-sm text-white/90 sm:text-base">
+              Tênis e roupinhas esportivas pra pequena atleta arrasar em todas as brincadeiras.
+            </p>
+          </div>
         </div>
       </section>
 
