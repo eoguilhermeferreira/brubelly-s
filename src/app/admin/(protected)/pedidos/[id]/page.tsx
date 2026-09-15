@@ -4,6 +4,7 @@ import { ArrowLeft } from "lucide-react";
 
 import { DeleteOrderButton } from "@/components/admin/delete-order-button";
 import { OrderStatusSelect } from "@/components/admin/order-status-select";
+import { TrackingCodeField } from "@/components/admin/tracking-code-field";
 import { OrderSummary } from "@/components/pedido/order-summary";
 import { getOrderById } from "@/lib/queries";
 
@@ -29,6 +30,10 @@ export default async function AdminPedidoDetailPage({ params }: PageProps<"/admi
         <p className="mt-1 text-sm text-pine-900">{order.customer_name}</p>
         <p className="text-sm text-muted-foreground">{order.customer_email} · {order.customer_phone}</p>
       </div>
+
+      {order.delivery_method === "entrega" && (
+        <TrackingCodeField orderId={order.id} trackingCode={order.tracking_code} />
+      )}
 
       <OrderSummary order={order} />
     </div>

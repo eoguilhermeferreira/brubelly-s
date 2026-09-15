@@ -1,7 +1,14 @@
 import { NextResponse, type NextRequest } from "next/server";
 
+import {
+  orderToEmailData,
+  sendPaymentApprovedEmail,
+  sendPaymentRefundedEmail,
+  sendPaymentRejectedEmail,
+} from "@/lib/email";
 import { fetchPayment, mapMercadoPagoStatus } from "@/lib/mercadopago";
 import { createAdminClient } from "@/lib/supabase/admin";
+import type { Order } from "@/types/database.types";
 
 /**
  * Webhook do Mercado Pago. Regra de ouro: nunca confiar no conteúdo da
@@ -26,14 +33,31 @@ export async function POST(request: NextRequest) {
 
   if (orderCode) {
     const admin = createAdminClient();
-    await admin
+    const { data: current } = await admin
       .from("orders")
-      .update({
-        payment_status: status,
-        mercadopago_payment_id: String(paymentId),
-        ...(status === "approved" ? { status: "pago" } : {}),
-      })
-      .eq("code", orderCode);
+      .select("*, items:order_items(*)")
+      .eq("code", orderCode)
+      .maybeSingle();
+
+    if (current) {
+      const statusChanged = current.payment_status !== status;
+
+      await admin
+        .from("orders")
+        .update({
+          payment_status: status,
+          mercadopago_payment_id: String(paymentId),
+          ...(status === "approved" ? { status: "pago" } : {}),
+        })
+        .eq("code", orderCode);
+
+      if (statusChanged) {
+        const emailData = orderToEmailData(current as Order);
+        if (status === "approved") await sendPaymentApprovedEmail(emailData);
+        else if (status === "rejected") await sendPaymentRejectedEmail(emailData);
+        else if (status === "refunded") await sendPaymentRefundedEmail(emailData);
+      }
+    }
   }
 
   return NextResponse.json({ ok: true }, { status: 200 });

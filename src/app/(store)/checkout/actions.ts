@@ -2,6 +2,7 @@
 
 import { STORE } from "@/config/store";
 import { checkoutSchema, type CheckoutFieldErrors } from "@/lib/checkout-schema";
+import { sendOrderReceivedEmail } from "@/lib/email";
 import { orderCode } from "@/lib/format";
 import { createCheckoutPreference } from "@/lib/mercadopago";
 import { quoteShipping } from "@/lib/melhor-envio";
@@ -219,6 +220,22 @@ export async function createOrder({ form, lines, shippingOptionId }: CreateOrder
       total_spent_cents: totalCents,
     });
   }
+
+  await sendOrderReceivedEmail({
+    code,
+    customerName: parsed.data.name,
+    customerEmail: parsed.data.email,
+    deliveryMethod: parsed.data.deliveryMethod,
+    items: resolved.map((l) => ({
+      productName: l.product.name,
+      variationLabel: l.variation ? `Tamanho ${l.variation.value}` : null,
+      unitPriceCents: l.product.price_cents,
+      quantity: l.quantity,
+    })),
+    subtotalCents,
+    shippingCents: shipping.priceCents,
+    totalCents,
+  });
 
   const preferenceUrl = await createCheckoutPreference({
     orderCode: code,

@@ -107,6 +107,7 @@ export type Order = {
   payment_status: PaymentStatus;
   mercadopago_payment_id: string | null;
   status: OrderStatus;
+  tracking_code: string | null;
   items: OrderItem[];
   created_at: string;
 };
