@@ -36,9 +36,6 @@ export default async function HomePage() {
             <span className="w-fit rounded-full bg-white/70 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-pine-900">
               Nova coleção
             </span>
-            <h1 className="mt-4 max-w-md font-display text-4xl font-bold leading-[1.05] text-pine-900 sm:text-5xl">
-              Roupinhas com carinho de boutique
-            </h1>
             <p className="mt-4 max-w-sm text-[15px] text-pine-900/80">
               Peças macias, coloridas e feitas para acompanhar cada travessura —
               do primeiro bodinho ao look do primeiro dia de aula.
