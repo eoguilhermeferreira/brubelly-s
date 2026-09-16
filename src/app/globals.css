@@ -212,3 +212,13 @@
     opacity: 0.35;
   }
 }
+
+/* iOS/Android abrem zoom automático em campos com fonte abaixo de 16px ao
+   focar — força 16px só no mobile, sem mudar o tamanho visual no desktop. */
+@media (max-width: 767px) {
+  input,
+  textarea,
+  select {
+    font-size: 16px !important;
+  }
+}

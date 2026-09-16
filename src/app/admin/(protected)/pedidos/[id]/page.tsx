@@ -20,7 +20,12 @@ export default async function AdminPedidoDetailPage({ params }: PageProps<"/admi
           <ArrowLeft className="size-4" /> Voltar para pedidos
         </Link>
         <div className="flex items-center gap-2">
-          <OrderStatusSelect orderId={order.id} status={order.status} deliveryMethod={order.delivery_method} />
+          <OrderStatusSelect
+            orderId={order.id}
+            status={order.status}
+            deliveryMethod={order.delivery_method}
+            trackingCode={order.tracking_code}
+          />
           <DeleteOrderButton orderId={order.id} orderCode={order.code} redirectTo="/admin/pedidos" />
         </div>
       </div>
@@ -31,7 +36,7 @@ export default async function AdminPedidoDetailPage({ params }: PageProps<"/admi
         <p className="text-sm text-muted-foreground">{order.customer_email} · {order.customer_phone}</p>
       </div>
 
-      {order.delivery_method === "entrega" && (
+      {order.delivery_method === "entrega" && (order.status === "enviado" || order.status === "entregue") && (
         <TrackingCodeField orderId={order.id} trackingCode={order.tracking_code} />
       )}
 

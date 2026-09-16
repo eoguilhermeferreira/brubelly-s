@@ -1,8 +1,8 @@
-import Link from "next/link";
-
+import { ClickableTableRow } from "@/components/admin/clickable-table-row";
 import { DeleteOrderButton } from "@/components/admin/delete-order-button";
 import { DeliveryMethodBadge } from "@/components/pedido/delivery-method-badge";
 import { OrderStatusBadge } from "@/components/pedido/order-status-badge";
+import { PaymentStatusBadge } from "@/components/pedido/payment-status-badge";
 import {
   Table,
   TableBody,
@@ -42,18 +42,18 @@ export default async function AdminPedidosPage() {
           </TableHeader>
           <TableBody>
             {orders.map((order) => (
-              <TableRow key={order.id}>
+              <ClickableTableRow key={order.id} href={`/admin/pedidos/${order.id}`}>
                 <TableCell>
-                  <Link href={`/admin/pedidos/${order.id}`} className="font-tag text-sm font-semibold text-rose-600 hover:underline">
-                    {order.code}
-                  </Link>
+                  <span className="font-tag text-sm font-semibold text-rose-600">{order.code}</span>
                 </TableCell>
                 <TableCell>{order.customer_name}</TableCell>
                 <TableCell>
                   <DeliveryMethodBadge method={order.delivery_method} />
                 </TableCell>
                 <TableCell className="text-muted-foreground">{formatDate(order.created_at)}</TableCell>
-                <TableCell className="text-muted-foreground capitalize">{order.payment_status}</TableCell>
+                <TableCell>
+                  <PaymentStatusBadge status={order.payment_status} />
+                </TableCell>
                 <TableCell>
                   <OrderStatusBadge status={order.status} />
                 </TableCell>
@@ -61,7 +61,7 @@ export default async function AdminPedidosPage() {
                 <TableCell>
                   <DeleteOrderButton orderId={order.id} orderCode={order.code} />
                 </TableCell>
-              </TableRow>
+              </ClickableTableRow>
             ))}
           </TableBody>
         </Table>

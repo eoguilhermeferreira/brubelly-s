@@ -59,7 +59,7 @@ export default function PedidoPage() {
 
       {order && (
         <div className="mt-8">
-          <OrderSummary order={order} />
+          <OrderSummary order={order} allowPayment />
         </div>
       )}
     </div>

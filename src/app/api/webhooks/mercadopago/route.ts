@@ -42,12 +42,13 @@ export async function POST(request: NextRequest) {
     if (current) {
       const statusChanged = current.payment_status !== status;
 
+      // Só o pagamento é atualizado aqui — o andamento do pedido (status)
+      // é controlado exclusivamente pelo admin, nunca pelo webhook.
       await admin
         .from("orders")
         .update({
           payment_status: status,
           mercadopago_payment_id: String(paymentId),
-          ...(status === "approved" ? { status: "pago" } : {}),
         })
         .eq("code", orderCode);
 
