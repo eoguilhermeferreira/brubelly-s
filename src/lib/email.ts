@@ -196,25 +196,33 @@ function trackOrderNote(data: OrderEmailData): string {
   </p>`;
 }
 
+function thankYouNote(): string {
+  return `<p style="margin:16px 0 0;font-size:14px;color:#16281d;">
+    Muito obrigada por escolher a <strong>${escapeHtml(STORE.name)}</strong> 💚 Cada pedido é preparado com todo
+    carinho pra vestir seu pequeno(a) com muito estilo e conforto. Ficamos muito felizes com a sua confiança! ✨
+  </p>`;
+}
+
 // --- 1. Pedido recebido --------------------------------------------------
 
 export async function sendOrderReceivedEmail(data: OrderEmailData): Promise<void> {
   const html = emailLayout({
     preheader: `Recebemos seu pedido ${data.code} — pagamento ainda pendente.`,
-    heading: "Recebemos seu pedido!",
+    heading: "Recebemos seu pedido! 🎉",
     bodyHtml: `
       ${greeting(data)}
       <p style="margin:0;font-size:15px;color:#16281d;">
-        Seu pedido <strong>${escapeHtml(data.code)}</strong> chegou até nós e já está na fila. Assim que o
+        Seu pedido <strong>${escapeHtml(data.code)}</strong> chegou até nós e já está na fila 📦 Assim que o
         pagamento for confirmado, começamos a preparar tudo com carinho.
       </p>
       <p style="margin:12px 0 0;font-size:14px;color:#7a7168;">Pagamento: <strong style="color:#c2842a;">pendente</strong></p>
       ${orderSummaryHtml(data)}
+      ${thankYouNote()}
       ${trackOrderNote(data)}
     `,
   });
 
-  await sendEmail(data.customerEmail, `Recebemos seu pedido ${data.code}!`, html);
+  await sendEmail(data.customerEmail, `Recebemos seu pedido ${data.code}! 🎉`, html);
 }
 
 // --- 2. Pagamento aprovado/recusado/reembolsado --------------------------
@@ -222,19 +230,20 @@ export async function sendOrderReceivedEmail(data: OrderEmailData): Promise<void
 export async function sendPaymentApprovedEmail(data: OrderEmailData): Promise<void> {
   const html = emailLayout({
     preheader: `Pagamento do pedido ${data.code} aprovado — já vamos preparar tudo.`,
-    heading: "Pagamento aprovado!",
+    heading: "Pagamento aprovado! ✅💚",
     bodyHtml: `
       ${greeting(data)}
       <p style="margin:0;font-size:15px;color:#16281d;">
         Boas notícias! Confirmamos o pagamento do seu pedido <strong>${escapeHtml(data.code)}</strong> e já vamos
-        começar a separar e preparar tudo com carinho.
+        começar a separar e preparar tudo com muito carinho 🧸
       </p>
       ${orderSummaryHtml(data)}
+      ${thankYouNote()}
       ${trackOrderNote(data)}
     `,
   });
 
-  await sendEmail(data.customerEmail, `Pagamento aprovado — pedido ${data.code}`, html);
+  await sendEmail(data.customerEmail, `Pagamento aprovado — pedido ${data.code} ✅`, html);
 }
 
 export async function sendPaymentRejectedEmail(data: OrderEmailData): Promise<void> {
@@ -292,18 +301,19 @@ export async function sendPaymentRefundedEmail(data: OrderEmailData): Promise<vo
 export async function sendOrderPreparingEmail(data: OrderEmailData): Promise<void> {
   const html = emailLayout({
     preheader: `Seu pedido ${data.code} está sendo preparado.`,
-    heading: "Preparando seu pedido",
+    heading: "Preparando seu pedido 📦✨",
     bodyHtml: `
       ${greeting(data)}
       <p style="margin:0;font-size:15px;color:#16281d;">
-        Seu pedido <strong>${escapeHtml(data.code)}</strong> está sendo separado e embalado com carinho pela
-        nossa equipe.
+        Seu pedido <strong>${escapeHtml(data.code)}</strong> está sendo separado e embalado com muito carinho pela
+        nossa equipe 🧵💚
       </p>
+      ${thankYouNote()}
       ${trackOrderNote(data)}
     `,
   });
 
-  await sendEmail(data.customerEmail, `Seu pedido está sendo preparado — ${data.code}`, html);
+  await sendEmail(data.customerEmail, `Seu pedido está sendo preparado — ${data.code} 📦`, html);
 }
 
 export async function sendOrderShippedEmail(data: OrderEmailData, trackingCode?: string | null): Promise<void> {
@@ -319,28 +329,34 @@ export async function sendOrderShippedEmail(data: OrderEmailData, trackingCode?:
 
   const html = emailLayout({
     preheader: `Seu pedido ${data.code} saiu para entrega.`,
-    heading: "Pedido enviado!",
+    heading: "Pedido enviado! 🚚💨",
     bodyHtml: `
       ${greeting(data)}
       <p style="margin:0;font-size:15px;color:#16281d;">
-        Seu pedido <strong>${escapeHtml(data.code)}</strong> já saiu da nossa loja e está a caminho.
+        Seu pedido <strong>${escapeHtml(data.code)}</strong> já saiu da nossa loja e está a caminho até você 🎁
       </p>
       ${trackingHtml}
+      ${thankYouNote()}
       ${trackOrderNote(data)}
     `,
   });
 
-  await sendEmail(data.customerEmail, `Seu pedido saiu para entrega — ${data.code}`, html);
+  await sendEmail(data.customerEmail, `Seu pedido saiu para entrega — ${data.code} 🚚`, html);
 }
 
 export async function sendOrderDeliveredEmail(data: OrderEmailData): Promise<void> {
   const html = emailLayout({
     preheader: `Seu pedido ${data.code} consta como entregue.`,
-    heading: "Pedido entregue!",
+    heading: "Pedido entregue! 🎁💚",
     bodyHtml: `
       ${greeting(data)}
       <p style="margin:0;font-size:15px;color:#16281d;">
-        Seu pedido <strong>${escapeHtml(data.code)}</strong> consta como entregue. Esperamos que ame cada peça!
+        Seu pedido <strong>${escapeHtml(data.code)}</strong> consta como entregue 🥳 Esperamos que ame cada peça
+        e que seu pequeno(a) arrase com o novo look!
+      </p>
+      <p style="margin:16px 0 0;font-size:14px;color:#16281d;">
+        Obrigada de coração por confiar na <strong>${escapeHtml(STORE.name)}</strong> ✨ Ter você como cliente é o
+        que nos motiva a fazer cada pedido com tanto carinho. Esperamos te ver por aqui de novo em breve! 💚
       </p>
       <p style="margin:12px 0 0;font-size:15px;color:#16281d;">
         Qualquer coisa, é só chamar a gente no WhatsApp (${escapeHtml(STORE.contact.whatsappDisplay)}).
@@ -348,7 +364,7 @@ export async function sendOrderDeliveredEmail(data: OrderEmailData): Promise<voi
     `,
   });
 
-  await sendEmail(data.customerEmail, `Pedido entregue — ${data.code}`, html);
+  await sendEmail(data.customerEmail, `Pedido entregue — ${data.code} 🎁`, html);
 }
 
 export async function sendOrderCancelledEmail(data: OrderEmailData): Promise<void> {
