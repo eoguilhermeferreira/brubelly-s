@@ -30,7 +30,7 @@ const FEATURED_OPTIONS = [
 ] as const;
 
 type ImageRow = { url: string; alt: string };
-type VariationRow = { value: string; stock: string };
+type VariationRow = { value: string; stock: string; price: string };
 
 export function ProductForm({ product, categories }: { product: Product | null; categories: Category[] }) {
   const router = useRouter();
@@ -42,7 +42,11 @@ export function ProductForm({ product, categories }: { product: Product | null; 
   );
   const [variations, setVariations] = React.useState<VariationRow[]>(
     product && product.variations.length > 0
-      ? product.variations.map((v) => ({ value: v.value, stock: String(v.stock) }))
+      ? product.variations.map((v) => ({
+          value: v.value,
+          stock: String(v.stock),
+          price: v.price_cents ? centsToInputValue(v.price_cents) : "",
+        }))
       : [],
   );
 
@@ -191,9 +195,12 @@ export function ProductForm({ product, categories }: { product: Product | null; 
 
       <fieldset className="flex flex-col gap-3 rounded-2xl border border-border bg-white p-5">
         <legend className="px-1 font-display font-semibold text-pine-900">Variações (tamanhos)</legend>
-        <p className="text-xs text-muted-foreground">Deixe em branco se o produto não tem tamanhos (ex: acessórios).</p>
+        <p className="text-xs text-muted-foreground">
+          Deixe em branco se o produto não tem tamanhos (ex: acessórios). O valor é opcional — só
+          preencha quando aquele tamanho custa diferente do preço base do produto.
+        </p>
         {variations.map((v, i) => (
-          <div key={i} className="grid gap-2 sm:grid-cols-[1fr_1fr_auto]">
+          <div key={i} className="grid gap-2 sm:grid-cols-[1fr_1fr_1fr_auto]">
             <Input
               placeholder="Tamanho (ex: P, 2, 24)"
               value={v.value}
@@ -206,12 +213,20 @@ export function ProductForm({ product, categories }: { product: Product | null; 
               value={v.stock}
               onChange={(e) => setVariations((prev) => prev.map((row, idx) => (idx === i ? { ...row, stock: e.target.value } : row)))}
             />
+            <Input
+              placeholder="Valor (opcional)"
+              type="number"
+              step="0.01"
+              min="0"
+              value={v.price}
+              onChange={(e) => setVariations((prev) => prev.map((row, idx) => (idx === i ? { ...row, price: e.target.value } : row)))}
+            />
             <Button type="button" variant="outline" size="icon" onClick={() => setVariations((prev) => prev.filter((_, idx) => idx !== i))}>
               <X className="size-4" />
             </Button>
           </div>
         ))}
-        <Button type="button" variant="outline" size="sm" className="w-fit" onClick={() => setVariations((prev) => [...prev, { value: "", stock: "0" }])}>
+        <Button type="button" variant="outline" size="sm" className="w-fit" onClick={() => setVariations((prev) => [...prev, { value: "", stock: "0", price: "" }])}>
           <Plus className="size-4" /> Adicionar tamanho
         </Button>
         <input type="hidden" name="variations" value={JSON.stringify(variations)} />

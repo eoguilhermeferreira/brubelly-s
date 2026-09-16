@@ -78,7 +78,7 @@ export async function saveProduct(
     );
   }
 
-  let variations: { value: string; stock: number }[] = [];
+  let variations: { value: string; stock: number; price?: string }[] = [];
   try {
     variations = JSON.parse(String(formData.get("variations") ?? "[]"));
   } catch {
@@ -94,6 +94,7 @@ export async function saveProduct(
         label: "Tamanho",
         value: v.value.trim(),
         stock: Number(v.stock) || 0,
+        price_cents: v.price?.trim() ? parsePriceInput(v.price) : null,
       })),
     );
   }

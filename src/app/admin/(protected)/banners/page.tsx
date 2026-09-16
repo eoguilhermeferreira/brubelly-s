@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Plus } from "lucide-react";
 
 import { BannerActiveToggle } from "@/components/admin/banner-active-toggle";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { getAllBanners } from "@/lib/queries";
 
@@ -35,6 +36,9 @@ export default async function AdminBannersPage() {
             </Link>
             <div className="flex items-center justify-between p-4">
               <Link href={`/admin/banners/${banner.id}`} className="hover:text-rose-600">
+                <Badge variant={banner.placement === "hero" ? "mint" : "gold"} className="mb-1.5">
+                  {banner.placement === "hero" ? "Carrossel do topo" : "Banner promocional"}
+                </Badge>
                 <p className="font-display text-sm font-semibold text-pine-900">{banner.title}</p>
                 <p className="text-xs text-muted-foreground">{banner.subtitle}</p>
               </Link>

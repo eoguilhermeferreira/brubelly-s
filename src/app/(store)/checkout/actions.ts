@@ -78,12 +78,14 @@ async function resolveLines(lines: CartLine[]) {
         : undefined;
       const availableStock = variation ? variation.stock : product.stock;
       const quantity = Math.max(1, Math.min(line.quantity, availableStock));
+      const unitPriceCents = variation?.price_cents ?? product.price_cents;
 
       return {
         product,
         variation,
         quantity,
-        lineTotalCents: product.price_cents * quantity,
+        unitPriceCents,
+        lineTotalCents: unitPriceCents * quantity,
         lineWeightGrams: product.weight_grams * quantity,
       };
     })
@@ -212,7 +214,7 @@ export async function createOrder({ form, lines, shippingOptionId }: CreateOrder
       product_id: l.product.id,
       product_name: l.product.name,
       variation_label: l.variation ? `Tamanho ${l.variation.value}` : null,
-      unit_price_cents: l.product.price_cents,
+      unit_price_cents: l.unitPriceCents,
       quantity: l.quantity,
     })),
   );
@@ -252,7 +254,7 @@ export async function createOrder({ form, lines, shippingOptionId }: CreateOrder
     items: resolved.map((l) => ({
       productName: l.product.name,
       variationLabel: l.variation ? `Tamanho ${l.variation.value}` : null,
-      unitPriceCents: l.product.price_cents,
+      unitPriceCents: l.unitPriceCents,
       quantity: l.quantity,
     })),
     subtotalCents,
@@ -266,7 +268,7 @@ export async function createOrder({ form, lines, shippingOptionId }: CreateOrder
       id: l.product.id,
       title: `${l.product.name}${l.variation ? ` (${l.variation.value})` : ""}`,
       quantity: l.quantity,
-      unitPriceCents: l.product.price_cents,
+      unitPriceCents: l.unitPriceCents,
     })),
     shippingCents: shipping.priceCents,
     payerEmail: parsed.data.email,
