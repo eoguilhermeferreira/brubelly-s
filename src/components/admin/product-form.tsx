@@ -6,6 +6,7 @@ import { useActionState } from "react";
 import { Loader2, Plus, X } from "lucide-react";
 
 import { saveProduct, type ProductFormState } from "@/app/admin/(protected)/produtos/actions";
+import { ImageDropzone } from "@/components/admin/image-dropzone";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -154,18 +155,23 @@ export function ProductForm({ product, categories }: { product: Product | null; 
 
       <fieldset className="flex flex-col gap-3 rounded-2xl border border-border bg-white p-5">
         <legend className="px-1 font-display font-semibold text-pine-900">Imagens</legend>
+        <p className="text-xs text-muted-foreground">JPG, PNG ou WEBP — até 5MB por imagem.</p>
         {images.map((img, i) => (
-          <div key={i} className="grid gap-2 sm:grid-cols-[1fr_1fr_auto]">
-            <Input
-              placeholder="URL da imagem"
+          <div key={i} className="flex items-start gap-3 rounded-xl border border-border p-3">
+            <ImageDropzone
               value={img.url}
-              onChange={(e) => setImages((prev) => prev.map((row, idx) => (idx === i ? { ...row, url: e.target.value } : row)))}
+              onChange={(url) => setImages((prev) => prev.map((row, idx) => (idx === i ? { ...row, url } : row)))}
+              folder="produtos"
+              boxClassName="size-28 shrink-0"
             />
-            <Input
-              placeholder="Texto alternativo (opcional)"
-              value={img.alt}
-              onChange={(e) => setImages((prev) => prev.map((row, idx) => (idx === i ? { ...row, alt: e.target.value } : row)))}
-            />
+            <div className="flex flex-1 flex-col gap-1.5 self-stretch">
+              <Label>Texto alternativo (opcional)</Label>
+              <Input
+                placeholder="Ex: Vestido floral rosa, vista frontal"
+                value={img.alt}
+                onChange={(e) => setImages((prev) => prev.map((row, idx) => (idx === i ? { ...row, alt: e.target.value } : row)))}
+              />
+            </div>
             <Button
               type="button"
               variant="outline"
