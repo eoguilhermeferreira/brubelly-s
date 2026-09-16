@@ -17,9 +17,15 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import type { Banner } from "@/types/database.types";
+import type { Banner, Category } from "@/types/database.types";
 
-export function BannerForm({ banner }: { banner: Banner | null }) {
+function categorySlugFromHref(href: string | undefined): string {
+  if (!href) return "";
+  const query = href.split("?")[1] ?? "";
+  return new URLSearchParams(query).get("categoria") ?? "";
+}
+
+export function BannerForm({ banner, categories }: { banner: Banner | null; categories: Category[] }) {
   const router = useRouter();
   const boundAction = saveBanner.bind(null, banner?.id ?? null);
   const [state, formAction, pending] = useActionState<BannerFormState, FormData>(boundAction, {});
@@ -63,13 +69,25 @@ export function BannerForm({ banner }: { banner: Banner | null }) {
         </div>
 
         <div className="flex flex-col gap-1.5">
-          <Label htmlFor="href">Link de destino</Label>
-          <Input id="href" name="href" defaultValue={banner?.href} placeholder="/produtos?destaque=novidades" required />
+          <Label htmlFor="cta_label">Texto do botão (opcional)</Label>
+          <Input id="cta_label" name="cta_label" defaultValue={banner?.cta_label ?? ""} placeholder="Ver novidades" />
         </div>
 
         <div className="flex flex-col gap-1.5">
-          <Label htmlFor="cta_label">Texto do botão (opcional)</Label>
-          <Input id="cta_label" name="cta_label" defaultValue={banner?.cta_label ?? ""} placeholder="Ver novidades" />
+          <Label htmlFor="category_slug">Categoria pra onde o botão leva</Label>
+          <Select name="category_slug" defaultValue={categorySlugFromHref(banner?.href) || "todos"}>
+            <SelectTrigger id="category_slug">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="todos">Todos os produtos</SelectItem>
+              {categories.map((c) => (
+                <SelectItem key={c.id} value={c.slug}>
+                  {c.parent_id ? `↳ ${c.name}` : c.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
 
         <div className="flex flex-col gap-1.5">

@@ -17,7 +17,8 @@ export async function saveBanner(
   const title = String(formData.get("title") ?? "").trim();
   const subtitle = String(formData.get("subtitle") ?? "").trim();
   const imageUrl = String(formData.get("image_url") ?? "").trim();
-  const href = String(formData.get("href") ?? "").trim();
+  const categorySlug = String(formData.get("category_slug") ?? "todos").trim();
+  const href = categorySlug && categorySlug !== "todos" ? `/produtos?categoria=${categorySlug}` : "/produtos";
   const ctaLabel = String(formData.get("cta_label") ?? "").trim();
   const imagePosition = String(formData.get("image_position") ?? "").trim();
   const position = Number(formData.get("position") ?? 0);
@@ -27,7 +28,6 @@ export async function saveBanner(
 
   if (!title) return { error: "Título é obrigatório." };
   if (!imageUrl) return { error: "URL da imagem é obrigatória." };
-  if (!href) return { error: "Link de destino é obrigatório." };
 
   const payload = {
     title,

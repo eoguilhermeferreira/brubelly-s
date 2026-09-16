@@ -3,11 +3,11 @@ import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 
 import { BannerForm } from "@/components/admin/banner-form";
-import { getBannerById } from "@/lib/queries";
+import { getAllCategories, getBannerById } from "@/lib/queries";
 
 export default async function AdminBannerDetailPage({ params }: PageProps<"/admin/banners/[id]">) {
   const { id } = await params;
-  const banner = await getBannerById(id);
+  const [banner, categories] = await Promise.all([getBannerById(id), getAllCategories()]);
   if (!banner) notFound();
 
   return (
@@ -18,7 +18,7 @@ export default async function AdminBannerDetailPage({ params }: PageProps<"/admi
 
       <h1 className="font-display text-2xl font-bold text-pine-900">Editar banner</h1>
 
-      <BannerForm banner={banner} />
+      <BannerForm banner={banner} categories={categories} />
     </div>
   );
 }
