@@ -5,13 +5,20 @@ import { ArrowLeft } from "lucide-react";
 import { DeleteOrderButton } from "@/components/admin/delete-order-button";
 import { OrderStatusSelect } from "@/components/admin/order-status-select";
 import { TrackingCodeField } from "@/components/admin/tracking-code-field";
+import { WhatsappIcon } from "@/components/icons/whatsapp-icon";
 import { OrderSummary } from "@/components/pedido/order-summary";
+import { Button } from "@/components/ui/button";
+import { STORE } from "@/config/store";
+import { buildWhatsappUrl } from "@/lib/format";
 import { getOrderById } from "@/lib/queries";
 
 export default async function AdminPedidoDetailPage({ params }: PageProps<"/admin/pedidos/[id]">) {
   const { id } = await params;
   const order = await getOrderById(id);
   if (!order) notFound();
+
+  const firstName = order.customer_name.trim().split(" ")[0];
+  const whatsappMessage = `Oi ${firstName}! Aqui é da ${STORE.shortName} 💚 Sobre o seu pedido ${order.code}...`;
 
   return (
     <div className="flex flex-col gap-6">
@@ -20,6 +27,11 @@ export default async function AdminPedidoDetailPage({ params }: PageProps<"/admi
           <ArrowLeft className="size-4" /> Voltar para pedidos
         </Link>
         <div className="flex items-center gap-2">
+          <Button asChild size="sm" className="bg-[#25D366] text-white hover:bg-[#1ea952]">
+            <a href={buildWhatsappUrl(order.customer_phone, whatsappMessage)} target="_blank" rel="noopener noreferrer">
+              <WhatsappIcon className="size-4" /> WhatsApp
+            </a>
+          </Button>
           <OrderStatusSelect
             orderId={order.id}
             status={order.status}
