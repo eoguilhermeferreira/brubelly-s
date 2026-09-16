@@ -7,6 +7,7 @@ import {
   sendOrderCancelledEmail,
   sendOrderDeliveredEmail,
   sendOrderPreparingEmail,
+  sendOrderReadyForPickupEmail,
   sendOrderShippedEmail,
 } from "@/lib/email";
 import { deleteOrderFromDb, getOrderById, updateOrderStatusInDb, updateTrackingCodeInDb } from "@/lib/queries";
@@ -27,6 +28,7 @@ export async function updateOrderStatus(orderId: string, status: OrderStatus) {
   if (statusChanged) {
     const emailData = orderToEmailData(current);
     if (status === "em_separacao") await sendOrderPreparingEmail(emailData);
+    else if (status === "pronto_para_retirar") await sendOrderReadyForPickupEmail(emailData);
     else if (status === "enviado") await sendOrderShippedEmail(emailData, current.tracking_code);
     else if (status === "entregue") await sendOrderDeliveredEmail(emailData);
     else if (status === "cancelado") await sendOrderCancelledEmail(emailData);

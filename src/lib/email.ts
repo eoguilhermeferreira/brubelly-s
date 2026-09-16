@@ -344,6 +344,40 @@ export async function sendOrderShippedEmail(data: OrderEmailData, trackingCode?:
   await sendEmail(data.customerEmail, `Seu pedido saiu para entrega — ${data.code} 🚚`, html);
 }
 
+export async function sendOrderReadyForPickupEmail(data: OrderEmailData): Promise<void> {
+  const whatsappUrl = `https://wa.me/${STORE.contact.whatsapp}?text=${encodeURIComponent(
+    `Oi! Vim buscar meu pedido ${data.code}, quando posso passar aí?`,
+  )}`;
+
+  const html = emailLayout({
+    preheader: `Seu pedido ${data.code} está pronto para retirada.`,
+    heading: "Pedido pronto para retirar! 🎁",
+    bodyHtml: `
+      ${greeting(data)}
+      <p style="margin:0;font-size:15px;color:#16281d;">
+        Seu pedido <strong>${escapeHtml(data.code)}</strong> já está separado e pronto pra você buscar em
+        <strong>${escapeHtml(STORE.address.street)}, ${escapeHtml(STORE.address.number)}, ${escapeHtml(STORE.address.city)}/${escapeHtml(STORE.address.state)}</strong> 🧸
+      </p>
+      <p style="margin:12px 0 0;font-size:15px;color:#16281d;">
+        Chama a gente no WhatsApp pra combinar o melhor horário.
+      </p>
+      <table role="presentation" style="margin-top:20px;">
+        <tr>
+          <td style="border-radius:999px;background:#25D366;">
+            <a href="${whatsappUrl}" style="display:inline-block;padding:12px 24px;font-size:14px;font-weight:600;color:#ffffff;text-decoration:none;">
+              Chamar no WhatsApp
+            </a>
+          </td>
+        </tr>
+      </table>
+      ${orderSummaryHtml(data)}
+      ${thankYouNote()}
+    `,
+  });
+
+  await sendEmail(data.customerEmail, `Seu pedido está pronto para retirar — ${data.code} 🎁`, html);
+}
+
 export async function sendOrderDeliveredEmail(data: OrderEmailData): Promise<void> {
   const html = emailLayout({
     preheader: `Seu pedido ${data.code} consta como entregue.`,
