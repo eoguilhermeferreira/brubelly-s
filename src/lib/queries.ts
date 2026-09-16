@@ -275,7 +275,7 @@ export async function getDashboardStats() {
 
   return {
     totalOrders: allOrders.length,
-    pendingOrders: allOrders.filter((o) => o.status === "aguardando_pagamento").length,
+    pendingOrders: allOrders.filter((o) => o.payment_status === "pending").length,
     revenueCents: revenue,
     totalProducts: totalProducts ?? 0,
     totalCustomers: totalCustomers ?? 0,

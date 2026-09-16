@@ -1,7 +1,7 @@
-import Link from "next/link";
-
+import { ClickableTableRow } from "@/components/admin/clickable-table-row";
 import { DeliveryMethodBadge } from "@/components/pedido/delivery-method-badge";
 import { OrderStatusBadge } from "@/components/pedido/order-status-badge";
+import { PaymentStatusBadge } from "@/components/pedido/payment-status-badge";
 import {
   Table,
   TableBody,
@@ -22,17 +22,16 @@ export function RecentOrdersTable({ orders }: { orders: Order[] }) {
           <TableHead>Cliente</TableHead>
           <TableHead>Entrega</TableHead>
           <TableHead>Data</TableHead>
+          <TableHead>Pagamento</TableHead>
           <TableHead>Status</TableHead>
           <TableHead className="text-right">Total</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
         {orders.map((order) => (
-          <TableRow key={order.id}>
+          <ClickableTableRow key={order.id} href={`/admin/pedidos/${order.id}`}>
             <TableCell>
-              <Link href={`/admin/pedidos/${order.id}`} className="font-tag text-sm font-semibold text-rose-600 hover:underline">
-                {order.code}
-              </Link>
+              <span className="font-tag text-sm font-semibold text-rose-600">{order.code}</span>
             </TableCell>
             <TableCell>{order.customer_name}</TableCell>
             <TableCell>
@@ -40,10 +39,13 @@ export function RecentOrdersTable({ orders }: { orders: Order[] }) {
             </TableCell>
             <TableCell className="text-muted-foreground">{formatDate(order.created_at)}</TableCell>
             <TableCell>
+              <PaymentStatusBadge status={order.payment_status} />
+            </TableCell>
+            <TableCell>
               <OrderStatusBadge status={order.status} />
             </TableCell>
             <TableCell className="text-right font-medium">{formatPrice(order.total_cents)}</TableCell>
-          </TableRow>
+          </ClickableTableRow>
         ))}
       </TableBody>
     </Table>

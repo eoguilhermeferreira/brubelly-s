@@ -39,6 +39,37 @@ export async function updateOrderStatus(orderId: string, status: OrderStatus) {
   return { ok: true as const };
 }
 
+/**
+ * Transição para "Enviado" com código de rastreio — chamada pelo diálogo que
+ * aparece só nesse momento (o campo não fica visível o tempo todo). Salva o
+ * código e o status juntos e dispara um único e-mail de "pedido enviado".
+ */
+export async function markOrderShipped(orderId: string, trackingCode: string) {
+  const current = await getOrderById(orderId);
+  if (!current) return { ok: false as const };
+
+  const alreadyShipped = current.status === "enviado";
+  const trimmedCode = trackingCode.trim() || null;
+
+  try {
+    await updateTrackingCodeInDb(orderId, trimmedCode);
+    await updateOrderStatusInDb(orderId, "enviado");
+  } catch {
+    return { ok: false as const };
+  }
+
+  if (!alreadyShipped) {
+    const emailData = orderToEmailData(current);
+    await sendOrderShippedEmail(emailData, trimmedCode);
+  }
+
+  revalidatePath("/admin/pedidos");
+  revalidatePath(`/admin/pedidos/${orderId}`);
+  revalidatePath("/admin");
+
+  return { ok: true as const };
+}
+
 export async function updateTrackingCode(orderId: string, trackingCode: string) {
   try {
     await updateTrackingCodeInDb(orderId, trackingCode.trim() || null);

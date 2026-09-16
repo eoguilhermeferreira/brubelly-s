@@ -166,7 +166,7 @@ export async function createOrder({ form, lines, shippingOptionId }: CreateOrder
         total_cents: totalCents,
         payment_method: "mercadopago",
         payment_status: "pending",
-        status: "aguardando_pagamento",
+        status: "pedido_recebido",
       })
       .select("id")
       .single();

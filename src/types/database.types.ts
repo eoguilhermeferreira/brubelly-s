@@ -59,8 +59,7 @@ export type Banner = {
 };
 
 export type OrderStatus =
-  | "aguardando_pagamento"
-  | "pago"
+  | "pedido_recebido"
   | "em_separacao"
   | "enviado"
   | "entregue"
