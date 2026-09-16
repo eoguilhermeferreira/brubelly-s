@@ -30,6 +30,27 @@ export type CartLine = {
 };
 
 /**
+ * Menor número de pedido ainda não usado (a partir de 1). Se um pedido for
+ * excluído, o número dele volta a ficar disponível pro próximo pedido que
+ * chegar — enquanto o pedido existir, ninguém reaproveita o número dele.
+ */
+async function nextOrderSequence(admin: ReturnType<typeof createAdminClient>): Promise<number> {
+  const { data, error } = await admin.from("orders").select("code");
+  if (error) throw error;
+
+  const used = new Set(
+    (data ?? [])
+      .map((o) => /^BB(\d{5})$/.exec(o.code)?.[1])
+      .filter((n): n is string => Boolean(n))
+      .map((n) => parseInt(n, 10)),
+  );
+
+  let sequence = 1;
+  while (used.has(sequence)) sequence++;
+  return sequence;
+}
+
+/**
  * Recalcula preço e peso no servidor a partir do catálogo real — nunca
  * confia no valor mostrado no carrinho do navegador.
  */
@@ -145,13 +166,15 @@ export async function createOrder({ form, lines, shippingOptionId }: CreateOrder
           state: STORE.address.state,
         };
 
-  // Código do pedido: tenta algumas vezes em caso de colisão (constraint
-  // única em `orders.code`) — improvável, mas o gerador é baseado no
-  // segundo corrente, não em sequência de banco.
+  // Código do pedido: sempre o menor número ainda não usado (a partir de 1).
+  // Quando um pedido é excluído, o número dele fica livre pro próximo — mas
+  // só depois de excluído; enquanto o pedido existir, novos pedidos seguem
+  // pra frente normalmente. Recalcula a cada tentativa pra lidar com a rara
+  // colisão de duas requisições simultâneas (constraint única em `orders.code`).
   let code = "";
   let orderId: string | null = null;
   for (let attempt = 0; attempt < 3 && !orderId; attempt++) {
-    code = orderCode(Math.floor(Date.now() / 1000) % 100000 + attempt);
+    code = orderCode(await nextOrderSequence(admin));
     const { data: inserted, error: insertError } = await admin
       .from("orders")
       .insert({
