@@ -5,14 +5,16 @@ import { ArrowRight, CreditCard, ShieldCheck, Truck } from "lucide-react";
 import { BannerCarousel } from "@/components/store/banner-carousel";
 import { CategoryGrid } from "@/components/store/category-grid";
 import { ProductCard } from "@/components/store/product-card";
+import { PromoBannerCarousel } from "@/components/store/promo-banner-carousel";
 import { Button } from "@/components/ui/button";
 import { STORE } from "@/config/store";
-import { getBanners, getCategories, getProducts } from "@/lib/queries";
+import { getBanners, getCategories, getPromoBanners, getProducts } from "@/lib/queries";
 
 export default async function HomePage() {
-  const [categories, banners, novidades, maisVendidos] = await Promise.all([
+  const [categories, banners, promoBanners, novidades, maisVendidos] = await Promise.all([
     getCategories(),
     getBanners(),
+    getPromoBanners(),
     getProducts({ featuredSection: "novidades" }),
     getProducts({ featuredSection: "mais-vendidos" }),
   ]);
@@ -77,55 +79,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="relative left-1/2 right-1/2 -mx-[50vw] mt-14 w-screen">
-        <div className="relative h-72 w-full sm:h-[420px] lg:h-[520px]">
-          <Image
-            src="/banners/promo-adidas.jpg"
-            alt="Coleção esportiva para meninas"
-            fill
-            priority={false}
-            sizes="100vw"
-            className="object-cover object-[50%_20%]"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-pine-900/70 via-pine-900/10 to-transparent" />
-          <div className="absolute inset-x-0 bottom-0 flex flex-col items-start gap-2 p-6 sm:p-10">
-            <span className="w-fit rounded-full bg-white/90 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-pine-900">
-              Novidade
-            </span>
-            <h2 className="max-w-sm font-display text-2xl font-bold leading-tight text-white sm:text-4xl">
-              Conforto e atitude para ela
-            </h2>
-            <p className="max-w-xs text-sm text-white/90 sm:text-base">
-              Tênis e roupinhas esportivas pra pequena atleta arrasar em todas as brincadeiras.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <section className="relative left-1/2 right-1/2 -mx-[50vw] mt-4 w-screen">
-        <div className="relative h-72 w-full sm:h-[420px] lg:h-[520px]">
-          <Image
-            src="/banners/promo-menina-flores.jpg"
-            alt="Coleção florida para meninas"
-            fill
-            priority={false}
-            sizes="100vw"
-            className="object-cover object-[50%_15%]"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-pine-900/70 via-pine-900/10 to-transparent" />
-          <div className="absolute inset-x-0 bottom-0 flex flex-col items-start gap-2 p-6 sm:p-10">
-            <span className="w-fit rounded-full bg-white/90 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-pine-900">
-              Novidade
-            </span>
-            <h2 className="max-w-sm font-display text-2xl font-bold leading-tight text-white sm:text-4xl">
-              Verão em flor para ela
-            </h2>
-            <p className="max-w-xs text-sm text-white/90 sm:text-base">
-              Blusinhas florais e shortinhos leves pra curtir os dias quentes com muito estilo.
-            </p>
-          </div>
-        </div>
-      </section>
+      <PromoBannerCarousel banners={promoBanners} />
 
       <section className="mt-14">
         <div className="flex items-end justify-between">

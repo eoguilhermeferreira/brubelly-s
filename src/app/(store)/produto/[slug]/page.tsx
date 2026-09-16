@@ -6,8 +6,6 @@ import { ChevronRight } from "lucide-react";
 import { AddToCartForm } from "@/components/store/add-to-cart-form";
 import { ProductCard } from "@/components/store/product-card";
 import { ProductShippingCalculator } from "@/components/store/product-shipping-calculator";
-import { Badge } from "@/components/ui/badge";
-import { formatPrice } from "@/lib/format";
 import { getCategoryName, getProductBySlug, getRelatedProducts } from "@/lib/queries";
 
 export async function generateMetadata({ params }: PageProps<"/produto/[slug]">) {
@@ -26,8 +24,6 @@ export default async function ProductPage({ params }: PageProps<"/produto/[slug]
     getCategoryName(product.category_id),
     getRelatedProducts(product),
   ]);
-
-  const onSale = product.compare_at_price_cents && product.compare_at_price_cents > product.price_cents;
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
@@ -58,29 +54,13 @@ export default async function ProductPage({ params }: PageProps<"/produto/[slug]
           <p className="font-tag text-xs uppercase tracking-wider text-muted-foreground">{product.color}</p>
           <h1 className="mt-1 font-display text-2xl font-bold text-pine-900 sm:text-3xl">{product.name}</h1>
 
-          <div className="mt-3 flex items-center gap-3">
-            <span className="font-display text-2xl font-bold text-rose-600">
-              {formatPrice(product.price_cents)}
-            </span>
-            {onSale && (
-              <>
-                <span className="text-base text-muted-foreground line-through">
-                  {formatPrice(product.compare_at_price_cents!)}
-                </span>
-                <Badge variant="rose">
-                  -{Math.round((1 - product.price_cents / product.compare_at_price_cents!) * 100)}%
-                </Badge>
-              </>
-            )}
-          </div>
-
-          <p className="mt-4 max-w-md text-[15px] leading-relaxed text-pine-900/80">
-            {product.description}
-          </p>
-
-          <div className="mt-6">
+          <div className="mt-3">
             <AddToCartForm product={product} />
           </div>
+
+          <p className="mt-5 max-w-md text-[15px] leading-relaxed text-pine-900/80">
+            {product.description}
+          </p>
 
           <ProductShippingCalculator productId={product.id} />
 

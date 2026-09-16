@@ -81,6 +81,19 @@ export async function getBanners(): Promise<Banner[]> {
     .from("banners")
     .select("*")
     .eq("active", true)
+    .eq("placement", "hero")
+    .order("position");
+  if (error) throw error;
+  return data;
+}
+
+export async function getPromoBanners(): Promise<Banner[]> {
+  const supabase = createPublicClient();
+  const { data, error } = await supabase
+    .from("banners")
+    .select("*")
+    .eq("active", true)
+    .eq("placement", "promo")
     .order("position");
   if (error) throw error;
   return data;

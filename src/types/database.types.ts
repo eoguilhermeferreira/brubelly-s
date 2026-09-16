@@ -19,6 +19,7 @@ export type ProductVariation = {
   label: string; // ex: "Tamanho"
   value: string; // ex: "2", "RN", "10"
   stock: number;
+  price_cents: number | null; // null = usa o preço base do produto
 };
 
 export type ProductImage = {
@@ -56,6 +57,7 @@ export type Banner = {
   image_position: string;
   position: number;
   active: boolean;
+  placement: "hero" | "promo";
 };
 
 export type OrderStatus =

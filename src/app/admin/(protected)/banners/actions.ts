@@ -22,6 +22,8 @@ export async function saveBanner(
   const imagePosition = String(formData.get("image_position") ?? "").trim();
   const position = Number(formData.get("position") ?? 0);
   const active = formData.get("active") === "on";
+  const placementInput = String(formData.get("placement") ?? "hero");
+  const placement = placementInput === "promo" ? "promo" : "hero";
 
   if (!title) return { error: "Título é obrigatório." };
   if (!imageUrl) return { error: "URL da imagem é obrigatória." };
@@ -36,6 +38,7 @@ export async function saveBanner(
     image_position: imagePosition || "center 30%",
     position: Number.isNaN(position) ? 0 : position,
     active,
+    placement,
   };
 
   if (bannerId) {

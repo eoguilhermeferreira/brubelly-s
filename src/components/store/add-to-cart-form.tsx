@@ -5,7 +5,9 @@ import { Minus, Plus, ShoppingBag } from "lucide-react";
 import { toast } from "sonner";
 
 import { useCart } from "@/components/cart/cart-provider";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { formatPrice } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import type { Product } from "@/types/database.types";
 
@@ -20,6 +22,8 @@ export function AddToCartForm({ product }: { product: Product }) {
   const selectedVariation = product.variations.find((v) => v.value === selectedValue);
   const maxStock = hasVariations ? (selectedVariation?.stock ?? 0) : product.stock;
   const canAdd = hasVariations ? Boolean(selectedValue) && maxStock > 0 : product.stock > 0;
+  const effectivePriceCents = selectedVariation?.price_cents ?? product.price_cents;
+  const onSale = Boolean(product.compare_at_price_cents && product.compare_at_price_cents > effectivePriceCents);
 
   function handleAdd() {
     if (!canAdd) return;
@@ -30,7 +34,7 @@ export function AddToCartForm({ product }: { product: Product }) {
         slug: product.slug,
         name: product.name,
         image: product.images[0]?.url ?? "",
-        unitPriceCents: product.price_cents,
+        unitPriceCents: effectivePriceCents,
         variationLabel: hasVariations ? (product.variations[0]?.label ?? null) : null,
         variationValue: hasVariations ? selectedValue : null,
         maxStock,
@@ -44,6 +48,22 @@ export function AddToCartForm({ product }: { product: Product }) {
 
   return (
     <div className="flex flex-col gap-5">
+      <div className="flex items-center gap-3">
+        <span className="font-display text-2xl font-bold text-rose-600">
+          {formatPrice(effectivePriceCents)}
+        </span>
+        {onSale && (
+          <>
+            <span className="text-base text-muted-foreground line-through">
+              {formatPrice(product.compare_at_price_cents!)}
+            </span>
+            <Badge variant="rose">
+              -{Math.round((1 - effectivePriceCents / product.compare_at_price_cents!) * 100)}%
+            </Badge>
+          </>
+        )}
+      </div>
+
       {hasVariations && (
         <div>
           <p className="text-sm font-semibold text-pine-900">

@@ -9,6 +9,13 @@ import { Button } from "@/components/ui/button";
 import { ImageUploadField } from "@/components/admin/image-upload-field";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import type { Banner } from "@/types/database.types";
 
@@ -40,6 +47,19 @@ export function BannerForm({ banner }: { banner: Banner | null }) {
             defaultValue={banner?.image_url}
             required
           />
+        </div>
+
+        <div className="flex flex-col gap-1.5">
+          <Label htmlFor="placement">Onde aparece</Label>
+          <Select name="placement" defaultValue={banner?.placement ?? "hero"}>
+            <SelectTrigger id="placement">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="hero">Carrossel do topo</SelectItem>
+              <SelectItem value="promo">Banner promocional (abaixo de &quot;Novidades&quot;)</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
 
         <div className="flex flex-col gap-1.5">
