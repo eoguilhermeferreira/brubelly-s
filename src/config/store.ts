@@ -41,7 +41,7 @@ export const STORE = {
   cnpj: "23.694.209/0001-06",
 
   shipping: {
-    /** Frete fixo usado como fallback quando o Melhor Envio não responde ou não está configurado. */
+    /** Valor base (peso mínimo) usado pra calcular as opções de frete quando a transportadora não devolve cotação real (sem token, erro pontual, ou serviço não contratado). */
     flatRateCents: 1990,
     freeShippingThresholdCents: 29900,
     originZipCode: "18700-090",
