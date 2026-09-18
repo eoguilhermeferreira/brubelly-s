@@ -30,8 +30,12 @@ virar "de verdade":
   para `/checkout/sucesso` — não há persistência em banco, então pedidos
   criados no checkout não aparecem depois em "Meu pedido" (só os pedidos
   seed de `mock-data.ts`, ex. `BB00001` / e-mail `marina.souza@email.com`).
-- **Frete** (`src/lib/melhor-envio.ts`): sem `MELHOR_ENVIO_TOKEN`, cai no
-  frete fixo (`src/lib/shipping.ts`).
+- **Frete** (`src/lib/melhor-envio.ts`): sempre mostra 6 opções (Correios
+  PAC/SEDEX, 2 da Jadlog, 2 da Loggi). Com `MELHOR_ENVIO_TOKEN` configurado,
+  busca cotação real e usa PAC/SEDEX específicos da Correios e as 2 mais
+  baratas de Jadlog/Loggi; qualquer opção que faltar na resposta (ou sem
+  token) é completada com um valor calculado por peso, pra nunca mostrar
+  menos de 6.
 - **CEP** (`src/lib/viacep.ts`): já é uma API pública real (ViaCEP), funciona
   mesmo em modo mock.
 - **Admin > Pedidos**: mudar o status de um pedido edita o array em memória
