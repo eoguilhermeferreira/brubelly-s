@@ -63,6 +63,12 @@ que o projeto Supabase existir.
 - **Checkout Pro** (redirect), não Checkout Transparente.
 - Middleware de admin fica em `src/proxy.ts`, reexportado por
   `src/middleware.ts` (nome exigido pelo Next.js).
+- **Pedido novo em tempo real** (`src/components/admin/new-order-listener.tsx`,
+  montado no layout de `/admin`): assina Supabase Realtime na tabela `orders`
+  (precisa estar na publication `supabase_realtime` — já habilitado via
+  migration) e, a cada INSERT, toca um bipe (Web Audio, sem arquivo de
+  áudio), mostra um toast e chama `router.refresh()` — a lista/dashboard
+  atualiza sozinha, sem precisar de F5.
 
 ## Sobre o shadcn/ui
 
