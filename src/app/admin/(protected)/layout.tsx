@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { redirect } from "next/navigation";
 
 import { AdminSidebar } from "@/components/admin/sidebar";
+import { NewOrderListener } from "@/components/admin/new-order-listener";
 import { getAdminProfile } from "@/lib/auth";
 
 export default async function AdminProtectedLayout({ children }: { children: ReactNode }) {
@@ -10,6 +11,7 @@ export default async function AdminProtectedLayout({ children }: { children: Rea
 
   return (
     <div className="flex min-h-screen bg-paper-warm">
+      <NewOrderListener />
       <AdminSidebar />
       <div className="flex-1 overflow-x-hidden">
         <main className="mx-auto max-w-6xl px-4 py-6 sm:px-8 sm:py-8">{children}</main>
