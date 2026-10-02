@@ -102,6 +102,8 @@ export async function saveProduct(
   revalidatePath("/admin/produtos");
   revalidatePath(`/admin/produtos/${id}`);
   revalidatePath("/produtos");
+  revalidatePath("/categoria/[slug]", "page");
+  revalidatePath("/");
   redirect("/admin/produtos");
 }
 
@@ -110,5 +112,7 @@ export async function toggleProductActive(id: string, active: boolean) {
   const { error } = await supabase.from("products").update({ active }).eq("id", id);
   revalidatePath("/admin/produtos");
   revalidatePath("/produtos");
+  revalidatePath("/categoria/[slug]", "page");
+  revalidatePath("/");
   return { ok: !error };
 }
