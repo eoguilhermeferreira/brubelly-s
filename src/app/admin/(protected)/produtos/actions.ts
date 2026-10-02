@@ -45,7 +45,8 @@ export async function saveProduct(
     stock,
     weight_grams: Number.isNaN(weightGrams) ? 0 : weightGrams,
     active,
-    featured_section: featuredSectionInput || null,
+    featured_section:
+      featuredSectionInput && featuredSectionInput !== "none" ? featuredSectionInput : null,
   };
 
   let id = productId;
