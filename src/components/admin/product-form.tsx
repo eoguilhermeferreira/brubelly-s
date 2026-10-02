@@ -37,6 +37,16 @@ export function ProductForm({ product, categories }: { product: Product | null; 
   const boundAction = saveProduct.bind(null, product?.id ?? null);
   const [state, formAction, pending] = useActionState<ProductFormState, FormData>(boundAction, {});
 
+  const topLevelCategories = categories.filter((c) => !c.parent_id);
+  const currentCategory = product ? categories.find((c) => c.id === product.category_id) : undefined;
+  const [parentCategoryId, setParentCategoryId] = React.useState(
+    currentCategory ? (currentCategory.parent_id ?? currentCategory.id) : "",
+  );
+  const [subCategoryId, setSubCategoryId] = React.useState(
+    currentCategory?.parent_id ? currentCategory.id : "",
+  );
+  const subcategories = categories.filter((c) => c.parent_id === parentCategoryId);
+
   const [images, setImages] = React.useState<ImageRow[]>(
     product && product.images.length > 0 ? product.images.map((i) => ({ url: i.url, alt: i.alt })) : [{ url: "", alt: "" }],
   );
@@ -67,19 +77,46 @@ export function ProductForm({ product, categories }: { product: Product | null; 
 
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="category_id">Categoria</Label>
-          <Select name="category_id" defaultValue={product?.category_id}>
+          <Select
+            value={parentCategoryId}
+            onValueChange={(v) => {
+              setParentCategoryId(v);
+              setSubCategoryId("");
+            }}
+          >
             <SelectTrigger id="category_id">
               <SelectValue placeholder="Selecione" />
             </SelectTrigger>
             <SelectContent>
-              {categories.map((c) => (
+              {topLevelCategories.map((c) => (
                 <SelectItem key={c.id} value={c.id}>
-                  {c.parent_id ? `↳ ${c.name}` : c.name}
+                  {c.name}
                 </SelectItem>
               ))}
             </SelectContent>
           </Select>
         </div>
+
+        {subcategories.length > 0 && (
+          <div className="flex flex-col gap-1.5">
+            <Label htmlFor="subcategory_id">Subcategoria (opcional, pra dizer o que é)</Label>
+            <Select value={subCategoryId || "none"} onValueChange={(v) => setSubCategoryId(v === "none" ? "" : v)}>
+              <SelectTrigger id="subcategory_id">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="none">Nenhuma (categoria geral)</SelectItem>
+                {subcategories.map((c) => (
+                  <SelectItem key={c.id} value={c.id}>
+                    {c.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        )}
+
+        <input type="hidden" name="category_id" value={subCategoryId || parentCategoryId} />
 
         <div className="flex flex-col gap-1.5 sm:col-span-2">
           <Label htmlFor="description">Descrição</Label>
