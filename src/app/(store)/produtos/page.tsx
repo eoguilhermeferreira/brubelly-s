@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 import { ProductCard } from "@/components/store/product-card";
 import { Input } from "@/components/ui/input";
-import { getCategories, getProducts } from "@/lib/queries";
+import { getAllCategories, getProducts } from "@/lib/queries";
 import type { Product } from "@/types/database.types";
 
 export const metadata: Metadata = { title: "Produtos" };
@@ -22,13 +22,22 @@ export default async function ProdutosPage({
   const destaqueRaw = typeof params.destaque === "string" ? params.destaque : undefined;
   const destaque = (destaqueRaw as Product["featured_section"]) ?? undefined;
 
-  const [products, categories] = await Promise.all([
+  const [products, allCategories] = await Promise.all([
     getProducts({ search, categorySlug: categoria, featuredSection: destaque }),
-    getCategories(),
+    getAllCategories(),
   ]);
 
+  const categories = allCategories.filter((c) => !c.parent_id);
+  const currentCategory = categoria ? allCategories.find((c) => c.slug === categoria) : undefined;
+  const subcategoryParentId = currentCategory
+    ? (currentCategory.parent_id ?? currentCategory.id)
+    : undefined;
+  const subcategories = subcategoryParentId
+    ? allCategories.filter((c) => c.parent_id === subcategoryParentId)
+    : [];
+
   const title = destaque ? FEATURED_LABELS[destaque] : categoria
-    ? categories.find((c) => c.slug === categoria)?.name
+    ? currentCategory?.name
     : "Todos os produtos";
 
   return (
@@ -61,6 +70,24 @@ export default async function ProdutosPage({
           </a>
         )}
       </div>
+
+      {subcategories.length > 0 && (
+        <div className="mt-2 flex flex-wrap gap-2">
+          {subcategories.map((sub) => (
+            <a
+              key={sub.id}
+              href={`/produtos?categoria=${sub.slug}`}
+              className={`rounded-full border px-3 py-1 text-xs font-medium transition-colors ${
+                categoria === sub.slug
+                  ? "border-rose-500 bg-rose-50 text-rose-600"
+                  : "border-border text-pine-900 hover:bg-accent"
+              }`}
+            >
+              {sub.name}
+            </a>
+          ))}
+        </div>
+      )}
 
       {products.length === 0 ? (
         <p className="mt-14 text-center text-muted-foreground">
