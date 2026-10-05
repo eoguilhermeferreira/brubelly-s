@@ -8,42 +8,55 @@ import { ProductCard } from "@/components/store/product-card";
 import { PromoBannerCarousel } from "@/components/store/promo-banner-carousel";
 import { Button } from "@/components/ui/button";
 import { STORE } from "@/config/store";
-import { getBanners, getCategories, getPromoBanners, getProducts } from "@/lib/queries";
+import { getBanners, getCategories, getHomeHeroBanner, getPromoBanners, getProducts } from "@/lib/queries";
+
+const DEFAULT_HERO = {
+  image_url: "/banners/hero-flatlay.jpg",
+  title: "Nova coleção",
+  subtitle:
+    "Peças macias, coloridas e feitas para acompanhar cada travessura — do primeiro bodinho ao look do primeiro dia de aula.",
+  cta_label: "Ver coleção",
+  href: "/produtos",
+  image_position: "center",
+};
 
 export default async function HomePage() {
-  const [categories, banners, promoBanners, novidades, maisVendidos] = await Promise.all([
+  const [categories, banners, promoBanners, novidades, maisVendidos, homeHeroBanner] = await Promise.all([
     getCategories(),
     getBanners(),
     getPromoBanners(),
     getProducts({ featuredSection: "novidades" }),
     getProducts({ featuredSection: "mais-vendidos" }),
+    getHomeHeroBanner(),
   ]);
+
+  const hero = homeHeroBanner ?? DEFAULT_HERO;
 
   return (
     <div className="mx-auto max-w-6xl px-4 pb-20 sm:px-6">
       <section className="grid gap-6 max-md:gap-0 pt-6 max-md:pt-0 sm:pt-10 lg:grid-cols-[1.1fr_1fr] lg:gap-10">
         <div className="relative flex flex-col justify-center overflow-hidden rounded-2xl bg-mint-400/40 px-6 py-10 max-md:order-2 max-md:mt-6 sm:px-10 sm:py-14">
           <Image
-            src="/banners/hero-flatlay.jpg"
-            alt="Roupinhas e acessórios infantis dispostos com carinho"
+            src={hero.image_url}
+            alt={hero.title}
             fill
             priority
             sizes="(min-width: 1024px) 55vw, 100vw"
             className="object-cover"
+            style={{ objectPosition: hero.image_position || "center" }}
           />
           <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/80 to-white/30" />
           <div className="relative">
             <span className="w-fit rounded-full bg-white/70 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-pine-900">
-              Nova coleção
+              {hero.title}
             </span>
-            <p className="mt-4 max-w-sm text-[15px] text-pine-900/80">
-              Peças macias, coloridas e feitas para acompanhar cada travessura —
-              do primeiro bodinho ao look do primeiro dia de aula.
-            </p>
+            {hero.subtitle && (
+              <p className="mt-4 max-w-sm text-[15px] text-pine-900/80">{hero.subtitle}</p>
+            )}
             <div className="mt-6 flex flex-wrap gap-3">
               <Button size="lg" asChild>
-                <Link href="/produtos">
-                  Ver coleção <ArrowRight className="size-4" />
+                <Link href={hero.href}>
+                  {hero.cta_label || "Ver coleção"} <ArrowRight className="size-4" />
                 </Link>
               </Button>
             </div>

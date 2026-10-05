@@ -99,6 +99,20 @@ export async function getPromoBanners(): Promise<Banner[]> {
   return data;
 }
 
+export async function getHomeHeroBanner(): Promise<Banner | null> {
+  const supabase = createPublicClient();
+  const { data, error } = await supabase
+    .from("banners")
+    .select("*")
+    .eq("active", true)
+    .eq("placement", "home")
+    .order("position")
+    .limit(1)
+    .maybeSingle();
+  if (error) throw error;
+  return data;
+}
+
 export async function getAllBanners(): Promise<Banner[]> {
   const supabase = createPublicClient();
   const { data, error } = await supabase.from("banners").select("*").order("position");

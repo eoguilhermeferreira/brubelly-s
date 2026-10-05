@@ -62,6 +62,7 @@ export function BannerForm({ banner, categories }: { banner: Banner | null; cate
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
+              <SelectItem value="home">Destaque principal (foto grande, topo da home)</SelectItem>
               <SelectItem value="hero">Carrossel do topo</SelectItem>
               <SelectItem value="promo">Banner promocional (abaixo de &quot;Novidades&quot;)</SelectItem>
             </SelectContent>
