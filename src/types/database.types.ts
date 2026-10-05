@@ -57,7 +57,7 @@ export type Banner = {
   image_position: string;
   position: number;
   active: boolean;
-  placement: "hero" | "promo";
+  placement: "hero" | "promo" | "home";
 };
 
 export type OrderStatus =

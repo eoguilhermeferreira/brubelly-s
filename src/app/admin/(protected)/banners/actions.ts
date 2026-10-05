@@ -24,7 +24,8 @@ export async function saveBanner(
   const position = Number(formData.get("position") ?? 0);
   const active = formData.get("active") === "on";
   const placementInput = String(formData.get("placement") ?? "hero");
-  const placement = placementInput === "promo" ? "promo" : "hero";
+  const placement =
+    placementInput === "promo" ? "promo" : placementInput === "home" ? "home" : "hero";
 
   if (!title) return { error: "Título é obrigatório." };
   if (!imageUrl) return { error: "URL da imagem é obrigatória." };
