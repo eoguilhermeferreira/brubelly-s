@@ -1,10 +1,10 @@
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ChevronRight } from "lucide-react";
 
 import { AddToCartForm } from "@/components/store/add-to-cart-form";
 import { ProductCard } from "@/components/store/product-card";
+import { ProductGallery } from "@/components/store/product-gallery";
 import { ProductShippingCalculator } from "@/components/store/product-shipping-calculator";
 import { getCategoryName, getProductBySlug, getRelatedProducts } from "@/lib/queries";
 
@@ -36,19 +36,7 @@ export default async function ProductPage({ params }: PageProps<"/produto/[slug]
       </nav>
 
       <div className="mt-4 grid gap-8 lg:grid-cols-2 lg:gap-14">
-        <div className="tag-shape relative aspect-square overflow-hidden bg-mint-50">
-          <span className="tag-hole z-10" aria-hidden />
-          {product.images[0] && (
-            <Image
-              src={product.images[0].url}
-              alt={product.images[0].alt}
-              fill
-              priority
-              sizes="(min-width: 1024px) 50vw, 100vw"
-              className="object-cover"
-            />
-          )}
-        </div>
+        <ProductGallery images={product.images} productName={product.name} />
 
         <div className="flex flex-col">
           <p className="font-tag text-xs uppercase tracking-wider text-muted-foreground">{product.color}</p>
