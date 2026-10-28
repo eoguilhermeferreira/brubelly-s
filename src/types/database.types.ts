@@ -99,6 +99,7 @@ export type Order = {
   customer_name: string;
   customer_email: string;
   customer_phone: string;
+  customer_document: string | null;
   delivery_method: DeliveryMethod;
   shipping_address: ShippingAddress;
   subtotal_cents: number;

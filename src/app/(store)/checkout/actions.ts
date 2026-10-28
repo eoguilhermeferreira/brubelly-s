@@ -184,6 +184,7 @@ export async function createOrder({ form, lines, shippingOptionId }: CreateOrder
         customer_name: parsed.data.name,
         customer_email: parsed.data.email,
         customer_phone: parsed.data.phone,
+        customer_document: parsed.data.document,
         delivery_method: parsed.data.deliveryMethod,
         shipping_address: shippingAddress,
         subtotal_cents: subtotalCents,

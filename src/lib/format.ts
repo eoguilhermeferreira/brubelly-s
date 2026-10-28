@@ -41,6 +41,33 @@ export function formatPhone(value: string): string {
   return value;
 }
 
+/** "12345678909" -> "123.456.789-09" */
+export function formatCpf(value: string): string {
+  const digits = value.replace(/\D/g, "").slice(0, 11);
+  if (digits.length <= 3) return digits;
+  if (digits.length <= 6) return `${digits.slice(0, 3)}.${digits.slice(3)}`;
+  if (digits.length <= 9) return `${digits.slice(0, 3)}.${digits.slice(3, 6)}.${digits.slice(6)}`;
+  return `${digits.slice(0, 3)}.${digits.slice(3, 6)}.${digits.slice(6, 9)}-${digits.slice(9)}`;
+}
+
+/** Valida CPF pelos dígitos verificadores (não só o formato) — importante pra nota fiscal. */
+export function isValidCpf(value: string): boolean {
+  const digits = value.replace(/\D/g, "");
+  if (digits.length !== 11) return false;
+  if (/^(\d)\1{10}$/.test(digits)) return false;
+
+  for (const length of [9, 10]) {
+    let sum = 0;
+    for (let i = 0; i < length; i++) {
+      sum += Number(digits[i]) * (length + 1 - i);
+    }
+    const checkDigit = ((sum * 10) % 11) % 10;
+    if (checkDigit !== Number(digits[length])) return false;
+  }
+
+  return true;
+}
+
 /** Monta o link do WhatsApp a partir de um telefone brasileiro (DDD + número, sem 55) e uma mensagem. */
 export function buildWhatsappUrl(phone: string, message: string): string {
   const digits = phone.replace(/\D/g, "");

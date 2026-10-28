@@ -14,7 +14,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { STORE } from "@/config/store";
 import type { CheckoutFieldErrors } from "@/lib/checkout-schema";
-import { formatCep, formatPrice } from "@/lib/format";
+import { formatCep, formatCpf, formatPrice } from "@/lib/format";
 import { getPickupOption, type ShippingOption } from "@/lib/shipping";
 import { cn } from "@/lib/utils";
 
@@ -24,6 +24,7 @@ const initialForm = {
   name: "",
   email: "",
   phone: "",
+  document: "",
   cep: "",
   street: "",
   number: "",
@@ -142,7 +143,17 @@ export default function CheckoutPage() {
               <Field label="WhatsApp" error={errors.phone}>
                 <Input value={form.phone} onChange={(e) => updateField("phone", e.target.value)} placeholder="(11) 99999-9999" required />
               </Field>
+              <Field label="CPF" error={errors.document}>
+                <Input
+                  value={form.document}
+                  onChange={(e) => updateField("document", formatCpf(e.target.value))}
+                  placeholder="000.000.000-00"
+                  inputMode="numeric"
+                  required
+                />
+              </Field>
             </div>
+            <p className="text-xs text-muted-foreground">O CPF é usado para emitir a nota fiscal da compra.</p>
           </fieldset>
 
           <fieldset className="flex flex-col gap-4 rounded-2xl border border-border bg-white p-5">
