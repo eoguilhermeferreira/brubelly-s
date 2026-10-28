@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { isValidCpf } from "@/lib/format";
+
 export const checkoutSchema = z
   .object({
     name: z.string().trim().min(3, "Digite seu nome completo"),
@@ -8,6 +10,11 @@ export const checkoutSchema = z
       .string()
       .trim()
       .min(10, "Telefone inválido")
+      .transform((v) => v.replace(/\D/g, "")),
+    document: z
+      .string()
+      .trim()
+      .refine(isValidCpf, "CPF inválido")
       .transform((v) => v.replace(/\D/g, "")),
     deliveryMethod: z.enum(["entrega", "retirada"]),
     cep: z

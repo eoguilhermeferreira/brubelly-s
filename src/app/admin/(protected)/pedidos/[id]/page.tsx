@@ -9,7 +9,7 @@ import { WhatsappIcon } from "@/components/icons/whatsapp-icon";
 import { OrderSummary } from "@/components/pedido/order-summary";
 import { Button } from "@/components/ui/button";
 import { STORE } from "@/config/store";
-import { buildWhatsappUrl } from "@/lib/format";
+import { buildWhatsappUrl, formatCpf } from "@/lib/format";
 import { getOrderById } from "@/lib/queries";
 
 export default async function AdminPedidoDetailPage({ params }: PageProps<"/admin/pedidos/[id]">) {
@@ -46,6 +46,9 @@ export default async function AdminPedidoDetailPage({ params }: PageProps<"/admi
         <p className="font-display font-semibold text-pine-900">Cliente</p>
         <p className="mt-1 text-sm text-pine-900">{order.customer_name}</p>
         <p className="text-sm text-muted-foreground">{order.customer_email} · {order.customer_phone}</p>
+        <p className="text-sm text-muted-foreground">
+          CPF: {order.customer_document ? formatCpf(order.customer_document) : "não informado"}
+        </p>
       </div>
 
       {order.delivery_method === "entrega" && (order.status === "enviado" || order.status === "entregue") && (
